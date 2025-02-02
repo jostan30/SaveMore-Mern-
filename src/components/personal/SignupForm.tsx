@@ -47,7 +47,6 @@ export function SignupForm({ isLogin }: { isLogin: boolean }) {
   
       // Handle the response
       const result = await response.json();
-      console.log(result);
       if (response.ok) {
         if (result.sucess){
           toast({

@@ -4,6 +4,10 @@ const productSchema=mongoose.Schema({
        image:Buffer,
        name:String,
        price:Number,
+       units:{
+        type:Number,
+        default:1
+       },
        discount:{
         type:Number,
         default:0

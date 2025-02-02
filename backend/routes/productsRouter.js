@@ -1,32 +1,38 @@
-const express=require('express');
-const router=express.Router();
-const upload=require('../config/multer-config');
-const productModel=require('../models/product-model');
-const isLoggedInOwner = require('../middlewares/isLoggedInOwner');
+const express = require('express');
+const router = express.Router();
+const upload = require('../config/multer-config');
+const productModel = require('../models/product-model');
+const jwt = require("jsonwebtoken");
+const ownerModel = require("../models/owner-model");
 
-router.get('/',(req,res)=>{
-    res.send("Hey it is working");
+router.post('/create', upload.single('image'), async (req, res) => {
+    try {
+        const token = req.headers["authorization"]?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ success: false, message: "Token is missing" });
+          }
+        
+        const decoded = jwt.verify(token, process.env.JWT_KEY); // Verify the token
+            let owner = await ownerModel.findOne({ _id: decoded.id }).select("-password");
+
+        let { name, price,units, discount, ShopName, Address, description } = req.body;
+        let product = await productModel.create({
+            image: req.file.buffer,
+            name,
+            price,
+            units,
+            discount,
+            ShopName,
+            Address,
+            description,
+            owner: owner._id
+        })
+        console.log(product);
+        res.status(201).json({ success: true, message: "Product created successfully", product });
+    } catch (err) {
+        console.log(err);
+        return res.json({ success: false,message:"Error" });
+    }
+
 })
-router.post('/create',isLoggedInOwner,upload.single('image'),async(req,res)=>{
-        try{
-            const ownerId=req.owner._id;
-            let{name,price,discount,ShopName,Address,description}=req.body;
-            let product=await productModel.create({
-               image:req.file.buffer,
-               name,
-               price,
-               discount,
-               ShopName,
-               Address,
-               description,
-               owner:ownerId
-            })
-            req.flash("success","Products created successfully");
-            res.redirect("/owners/dashboard");
-            // res.redirect('/shop');
-        }catch(err){
-            res.send(err);
-        }
-         
-})
-module.exports=router;
+module.exports = router;

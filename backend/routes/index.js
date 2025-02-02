@@ -5,17 +5,26 @@ const productModel = require('../models/product-model');
 const userModel=require('../models/user-model');
 const isLoggedInOwner = require('../middlewares/isLoggedInOwner');
 const ownerModel = require('../models/owner-model');
-router.get('/',(req,res)=>{
-    let error=req.flash("error");
-    res.render("index",{error,loggedin:false});
-   
-});
-router.get('/shop',isLoggedIn,async(req,res)=>{
-    let products=await productModel.find();
-    let success=req.flash('success');
 
-    res.render("shop",{products,success});
+//all products
+router.get('/shop',async(req,res)=>{
+  try {
+    let products=await productModel.find();
+    if(!products) {
+      return res.json({success:false ,message:"No Products yet"})
+    }
+     // Convert Buffer image to Base64 string
+     const formattedProducts = products.map((product) => ({
+      ...product.toObject(),
+      image: product.image.toString("base64"), // Convert Buffer to Base64
+    }));
+    return res.json(formattedProducts);
+  } catch (error) {
+    console.log(error);
+    return res.json({success:false ,message:"Server error"});
+  }
 });
+
 router.get('/cart',isLoggedIn,async(req,res)=>{
     let user=await userModel.findOne({email:req.user.email}).populate('cart');
   // let bill= (Number(user.cart[0].price)+20)-Number(user.cart[0].discount)
@@ -38,6 +47,7 @@ router.get('/addtocart/:productid',isLoggedIn,async (req,res)=>{
 //    let user=await userModel.findOne({email:req.user.email});
 //    user.cart.pull(itemId);
 //    await user.save();
+
 router.get('/details/:productId',isLoggedIn,async(req,res)=>{
   // console.log(req.user);
 // let user=await userModel.findOne({email:req.user.email}).populate('cart');

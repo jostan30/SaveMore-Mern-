@@ -8,7 +8,10 @@ const ProtectedRoute = ({ children,userType }:{children:ReactNode ,userType:stri
 
   if (loading) return <div>Loading...</div>;
 
-  if (error) return <div>Error: {error.message || "Something went wrong!"}</div>;
+  if (error) {
+    console.log(error);
+    return <Navigate to="/" replace />
+}
 
   if (!isLoggedIn) return <Navigate to="/" replace />;
 
