@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import RetailerDashboard from "../personal/RetailerDashboard";
 import { ShoppingCartIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Badge } from "../ui/badge";
+import { fetchCartProducts } from "@/api/cartProducts-api";
 
 interface Product {
   _id: string;
@@ -51,6 +52,19 @@ export const LogoIcon = () => {
 
 function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [cartProduct ,setcartProduct] =useState<Product[]>([]);
+  const navigate = useNavigate();
+
+  //Function to load cart products
+  const loadCartProducts = async () => {
+    try {
+      const response = await fetchCartProducts();
+      setcartProduct(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
 
   // Function to load products
   const loadProducts = async () => {
@@ -61,11 +75,11 @@ function Shop() {
       console.error("Error fetching products:", error);
     }
   };
-
   // Fetch products on mount
   useEffect(() => {
     loadProducts();
-  }, []);
+    loadCartProducts();
+  }, [products,cartProduct]);
   return (
     <div className="flex flex-1 flex-col h-full">
       <div className="p-2 md:p-10 border border-neutral-200 dark:border-neutral-700 items-center bg-white dark:bg-neutral-900 flex flex-col gap-4 flex-1 w-full h-full">
@@ -76,8 +90,8 @@ function Shop() {
           <Input className="md:w-[40%] w-[70%] border-black" placeholder="Search item" />
           {/* Cart */}
           <div className="relative">
-            <ShoppingCartIcon className="mt-1 cursor-pointer w-8 h-8" />
-            <Badge variant="destructive" className="absolute -top-2 -right-2 text-xs px-2 rounded-xl">2</Badge>
+            <ShoppingCartIcon className="mt-1 cursor-pointer w-8 h-8" onClick={()=>navigate("/users/cart",{state :{cartProduct}})}/>
+            <Badge variant="destructive" className="absolute -top-2 -right-2 text-xs px-2 rounded-xl cursor-pointer">{cartProduct? cartProduct.length:0}</Badge>
           </div>
         </div>
 

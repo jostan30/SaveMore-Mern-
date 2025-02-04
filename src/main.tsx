@@ -6,6 +6,7 @@ import App from './App.tsx'
 import RetailersConsole from "./components/page/RetailersConsole.tsx";
 import Shop from "./components/page/Shop.tsx";
 import ProtectedRoute from "./components/personal/ProtectedRoute.tsx";
+import Cart from "./components/page/Cart.tsx";
 
 
 const rootElement = document.getElementById("root");
@@ -38,6 +39,11 @@ if (rootElement) {
               </ProtectedRoute>
             } />
           {/* Add nested routes here as needed */}
+          <Route path="/users/cart" element={
+            <ProtectedRoute userType="user">
+              <Cart />
+            </ProtectedRoute>
+          } />
         </Route>
       </Routes>
     </BrowserRouter>

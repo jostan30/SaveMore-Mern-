@@ -1,5 +1,6 @@
 'use client'
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 import {
     Drawer,
@@ -14,6 +15,8 @@ import {
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Minus, Plus } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { Toaster } from "../ui/toaster";
 
 interface Product {
     _id: string;
@@ -27,23 +30,62 @@ interface Product {
     image: string; // Base64 string or image URL
 }
 
-const ProductDetailsButton = ({ product}: { product: Product}) => {
-    const discountedPrice = product.price - product.discount;
-    const [units, setunits] = useState(0);
-    const [isOwner,setOwner] =useState(false);
-    const location = useLocation();
+const API_BASE_URL = "http://localhost:3000"; // Ensure this matches your backend
 
-    useEffect(()=>{
+const ProductDetailsButton = ({ product }: { product: Product }) => {
+    const discountedPrice = product.price - product.discount;
+    const [units, setunits] = useState(1);
+    const [isOwner, setOwner] = useState(false);
+    const location = useLocation();
+    const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+
+
+
+    useEffect(() => {
         const pathSegments = location.pathname.split("/").filter(Boolean);
         const lastSegment = pathSegments[pathSegments.length - 1];
-        if(lastSegment === 'retailers') {
-            setOwner(true);
+        setOwner(lastSegment === 'retailers');
+    }, [location.pathname]);
+
+    const AddToCart = async () => {
+        try {
+            console.log(token)
+            if (!token) {
+                console.log("You must be logged in to add items to the cart!");
+                return;
+            }
+            const data = {
+                product_id: product._id,
+                quantity:units
+            }
+
+            const response = await axios.post(
+                `${API_BASE_URL}/addtocart`,   // URL
+                data,                         // The request body (should be the second argument)
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,   // Authorization header with the token
+                        "Content-Type": "application/json", // Optional, ensures proper request format
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                toast({
+                    title: `Product added sucessfully !!`,
+                    description: `Keep shopping`
+                  })
+            } else {
+                toast({
+                    title: `Failed to add product to cart.`,
+                    description: `Try again`
+                  })
+            }
+        } catch (error) {
+            console.error("Error adding product to cart:", error);
+            console.log("Something went wrong. Please try again.");
         }
-        else{
-            setOwner(false);
-        }
-    })
-   
+    };
 
 
     return (
@@ -110,7 +152,7 @@ const ProductDetailsButton = ({ product}: { product: Product}) => {
                                             size="icon"
                                             className="h-8 w-8 shrink-0 rounded-full"
                                             onClick={() => setunits(units - 1)}
-                                            disabled={units <= 0}
+                                            disabled={units <= 1}
                                         >
                                             <Minus />
                                             <span className="sr-only">Decrease</span>
@@ -134,7 +176,7 @@ const ProductDetailsButton = ({ product}: { product: Product}) => {
                                             <span className="sr-only">Increase</span>
                                         </Button>
                                     </div>
-                                    <Button>Add to Cart</Button>
+                                    <Button onClick={() => AddToCart()}>Add to Cart</Button>
                                 </>
                             )
                         }
@@ -144,6 +186,7 @@ const ProductDetailsButton = ({ product}: { product: Product}) => {
                             </Button>
                         </DrawerClose>
                     </DrawerFooter>
+                    <Toaster/>
                 </div>
             </DrawerContent>
         </Drawer>

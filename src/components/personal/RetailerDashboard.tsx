@@ -16,7 +16,7 @@ interface RetailerDashboardProps {
   products: Product[]; // Expecting products to be passed as a prop
 }
 
-const RetailerDashboard = ({ products } : RetailerDashboardProps ) => {
+const RetailerDashboard = ({ products }: RetailerDashboardProps ) => {
   return (
     <div className="h-full flex flex-col">
       
@@ -31,7 +31,7 @@ const RetailerDashboard = ({ products } : RetailerDashboardProps ) => {
           <div className="p-4 rounded-lg h-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {products.map((product: Product) => (
-                <ProductCard key={product._id} product={product} />
+                <ProductCard key={product._id} product={product}   />
               ))}
             </div>
           </div>

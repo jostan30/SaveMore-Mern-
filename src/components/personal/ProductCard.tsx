@@ -1,4 +1,3 @@
-'use client'
 import React from "react";
 import ProductDetailsButton from "./ProductDetailsButton";
 
@@ -14,7 +13,11 @@ interface Product {
   units: number; // New field
 }
 
-const ProductCard: React.FC<{ product: Product  }> = ({ product }) => {
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product}) => {
   const discountedPrice = product.price - (product.price * product.discount) / 100;
 
   return (

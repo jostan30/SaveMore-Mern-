@@ -167,7 +167,7 @@ const Dashboard = () => {
 
         {/* Display items added by the retailer */}
         <div className="flex-1 min-h-0 overflow-hidden">
-          <RetailerDashboard products={products}/>
+          <RetailerDashboard products={products} />
         </div>
       </div>
     </div>
