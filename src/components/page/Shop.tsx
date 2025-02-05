@@ -13,11 +13,12 @@ interface Product {
   name: string;
   price: number;
   discount: number;
-  units: number;
   ShopName: string;
   Address: string;
   description: string;
-  image: string;
+  units: number; // This will now show the quantity in the cart
+  image: string; // Base64 string
+  quantity: number; // Quantity of the product in the cart
 }
 
 export const Logo = () => {
@@ -58,6 +59,7 @@ function Shop() {
   const loadCartProducts = async () => {
     try {
       const response = await fetchCartProducts();
+      console.log(response)
       setCartProduct(response); // Set cart products state
     } catch (error) {
       console.log("Error fetching cart products:", error);

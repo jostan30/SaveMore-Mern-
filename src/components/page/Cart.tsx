@@ -14,12 +14,14 @@ interface Product {
   ShopName: string;
   Address: string;
   description: string;
-  units: number;
+  units: number; // This will now show the quantity in the cart
   image: string; // Base64 string
+  quantity: number; // Quantity of the product in the cart
 }
 
 function Cart() {
   const [CartProduct, setCartProduct] = useState<Product[]>([]);
+  console.log(CartProduct);
 
   const token = document.cookie
     .split("; ")
@@ -40,12 +42,13 @@ function Cart() {
         },
         credentials: "include",
       });
+      console.log(response)
       if (response.ok) {
         toast({
           title: "Item Removed Successfully",
           description: `Keep Shopping`,
         });
-        loadCartProducts();
+        loadCartProducts(); // Refresh cart after removal
       } else {
         toast({
           variant: "destructive",
@@ -86,9 +89,9 @@ function Cart() {
         {/* Cart Products */}
         <div className="flex-1 justify-center p-4 bg-[#fff] mt-2 overflow-y-auto">
           {Array.isArray(CartProduct) && CartProduct.length > 0 ? (
-            CartProduct.map((product: Product) => (
+            CartProduct.map((product: Product, index: number) => (
               <div
-                key={product._id}
+              key={index}
                 className="flex justify-between items-center p-4 border-b border-gray-300"
               >
                 <div className="flex items-center space-x-4">
@@ -104,14 +107,14 @@ function Cart() {
                 </div>
                 <div className="flex flex-col items-center">
                   <p className="text-sm text-gray-600">Price: ${product.price}</p>
-                  <p className="text-sm text-gray-600">Quantity: {product.units}</p>
+                  <p className="text-sm text-gray-600">Quantity: {product.quantity}</p> {/* Displaying the quantity */}
                   <div className="flex space-x-2 mt-2">
                     <Button onClick={() => handleBuyNow(product._id)}>
                       Buy Now
                     </Button>
                     <Button
                       variant="destructive"
-                      onClick={() => handleRemove(product._id)}
+                      onClick={() => handleRemove(product._id)} // Removing only one instance
                     >
                       Remove
                     </Button>
@@ -124,7 +127,6 @@ function Cart() {
           )}
         </div>
         
-       
       </div>
       <Toaster />
     </div>

@@ -1,5 +1,11 @@
 const mongoose=require('mongoose');
 
+const cartItemSchema = new mongoose.Schema({
+       product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'product-model', required: true },
+       quantity: { type: Number, default: 1 }
+     });
+     
+
 
 const userSchema=mongoose.Schema({
        fullname:{
@@ -9,12 +15,7 @@ const userSchema=mongoose.Schema({
        },
        email:String,
        password:String,
-       cart:[
-              {type:mongoose.Schema.Types.ObjectId,
-              ref:"product-model"
-            }
-       ]
-       ,
+       cart:[cartItemSchema],
        orders:{
         type:Array,
         default:[]

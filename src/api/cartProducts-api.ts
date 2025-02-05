@@ -14,7 +14,7 @@ export const fetchCartProducts = async () => {
         "Content-Type": "application/json", // Optional, ensures proper request format
       },
     });
-    console.log(response.data)
+   
 
     return response.data; // Return the product data
   } catch (error) {
