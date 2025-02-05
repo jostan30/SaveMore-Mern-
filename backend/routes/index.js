@@ -91,17 +91,33 @@ router.post('/addtocart', async (req, res) => {
 //   let product=await productModel.findOneAndDelete({_id:req.params.itemId});
 // res.redirect('/cart');
 // })
-router.get('/delete/:itemId',isLoggedIn,async(req,res)=>{
-  let user = await userModel.findOne({ email: req.user.email });
-  user.cart = user.cart.filter(item => item.toString() !== req.params.itemId);
+router.get('/delete/:itemId', async (req, res) => {
+  try {
+    const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header  
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Token is missing" });
+    }
 
-  // Save the updated user document
-  await user.save();
-  
-  req.flash('success','Item removed from cart successfully');
-  res.redirect('/cart');
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    let user = await userModel.findOne({ _id: decoded.id });
 
-})
+    // Find the index of the first occurrence of the item with matching product ID
+    const itemIndex = user.cart.findIndex(item => item.toString() === req.params.itemId);
+
+    if (itemIndex !== -1) {
+      // Remove only the first matching item from the cart
+      user.cart.splice(itemIndex, 1);
+      await user.save();
+      return res.status(200).json({ success: true, message: "Removed from cart successfully!" });
+    } else {
+      return res.status(404).json({ success: false, message: "Item not found in cart" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
 
 // router.get('/chatSeller',isLoggedInOwner,async(req,res)=>{
 //     let ownerId=await ownerModel.findOne({_id:req.owner._id});
