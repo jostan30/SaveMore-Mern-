@@ -44,8 +44,9 @@ const useAuth = ({ userType }: { userType: string }) => {
 
         const response = await axios.get<AuthResponse>(api, {
           headers: { Authorization: `Bearer ${token}` },
+          
         });
-
+        
         if (!response.data.success) {
           throw new Error("Authentication failed");
         }

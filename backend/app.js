@@ -27,15 +27,15 @@ app.set('view engine','ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname,'public')));
-app.use(
-    expressSession({
-        resave:false,                   //we make use of this
-        saveUninitialized:false,
-        secret:process.env.EXPRESS_SESSION_SECRET
-    })
-)
-app.use(flash());     //flash makes use of express session to create messages
+ app.use(express.static(path.join(__dirname,'public')));
+// app.use(
+//     expressSession({
+//         resave:false,                   //we make use of this
+//         saveUninitialized:false,
+//         secret:process.env.EXPRESS_SESSION_SECRET
+//     })
+// )
+// app.use(flash());     //flash makes use of express session to create messages
 app.use('/',indexRouter);
 app.use('/owners',ownersRouter);
 app.use('/users',userRouter);
@@ -68,6 +68,9 @@ io.on('connection', (socket) => {
         console.log('A user disconnected:', socket.id);
     });
 });
-app.listen(3000);
+app.listen(3000,()=>{
+    console.log("Server running on port 3000");
+    
+});
 
 
