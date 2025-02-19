@@ -17,12 +17,12 @@ import useAuth from "@/hooks/useAuth";
 
 
 interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  discount: number;
-  units:number;
-  ShopName: string;
+  _id: string;  //mongodb
+  name: string;  //name of product
+  price: number;   //price of the product
+  discount: number;  //discount on the product
+  units:number;       //units of product...actual quantity
+  ShopName: string;   
   Address: string;
   description: string;
   image: string;

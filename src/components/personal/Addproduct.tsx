@@ -95,6 +95,7 @@ function AddProduct({onProductAdded} :{onProductAdded:()=>void}) {
                     title: `${result.message}`,
                     action: <ToastAction altText="Try again">Try again</ToastAction>,
                 })
+                
             }
             else {
                 
