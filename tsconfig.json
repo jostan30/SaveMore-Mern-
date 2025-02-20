@@ -9,11 +9,11 @@
     }
   ],
   "compilerOptions": {
-    "compilerOptions": {
+   
       "noUnusedLocals": false,
       "noUnusedParameters": false,
-      "strictNullChecks": false
-    },
+      "strictNullChecks": false,
+
     "baseUrl": ".",
     "paths": {
       "@/*": [
