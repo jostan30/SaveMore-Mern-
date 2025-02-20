@@ -1,3 +1,4 @@
+// @ts-ignore
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link } from "react-router-dom"; // Use react-router-dom for routing
