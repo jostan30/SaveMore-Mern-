@@ -160,7 +160,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { EyeIcon, EyeOffIcon, CheckCircle } from "lucide-react";
 
 interface SignupFormProps {
@@ -169,7 +169,7 @@ interface SignupFormProps {
 
 export function SignupForm({ isRetailer }: SignupFormProps) {
   const { toast } = useToast();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(0);

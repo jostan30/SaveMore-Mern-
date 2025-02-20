@@ -49,7 +49,7 @@
 
 // export default Authentication;
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoginForm } from "./LoginForm";
