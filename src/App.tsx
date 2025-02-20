@@ -18,7 +18,7 @@ function App() {
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Image Div */}
       <div
-        className="min-h-[40vh] md:min-h-screen flex-auto bg-contain bg-center bg-no-repeat w-full max-h-screen"
+          className={`min-h-[40vh] md:min-h-screen flex-auto bg-contain bg-center bg-no-repeat w-full max-h-screen transition-all duration-2000 ${!showLandingPage ? "opacity-100" : "opacity-0 hidden"} `}
         style={{ backgroundImage: "url('/landing.jpeg')" }}
       ></div>
 
