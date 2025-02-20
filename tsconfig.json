@@ -9,16 +9,8 @@
     }
   ],
   "compilerOptions": {
-   
-      "noUnusedLocals": false,
-      "noUnusedParameters": false,
-      "strictNullChecks": false,
-
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    }
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictNullChecks": false
   }
 }
