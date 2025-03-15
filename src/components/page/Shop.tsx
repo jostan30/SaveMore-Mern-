@@ -6,7 +6,7 @@ import { ShoppingCartIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Badge } from "../ui/badge";
-import { fetchCartProducts } from "@/api/cartProducts-api";
+import { useFetchCartProducts } from "@/api/cartProducts-api";
 
 interface Product {
   _id: string;
@@ -31,7 +31,7 @@ export const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
+        className="font-medium text-purple-800 dark:text-white whitespace-pre"
       >
         SaveMore
       </motion.span>
@@ -53,6 +53,7 @@ export const LogoIcon = () => {
 function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cartProduct, setCartProduct] = useState<Product[]>([]);
+  const {fetchCartProducts}=useFetchCartProducts();
   const navigate = useNavigate();
 
   // Function to load cart products

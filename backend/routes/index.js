@@ -10,7 +10,7 @@ const { ObjectId } = require('mongodb');
 router.get('/shop', async (req, res) => {
   try {
     let products = await productModel.find();
-    if (!products) {
+    if (products.length===0) {
       return res.json({ success: false, message: "No Products yet" });
     }
     // Convert Buffer image to Base64 string

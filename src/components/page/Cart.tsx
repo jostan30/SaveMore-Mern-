@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { Toaster } from "../ui/toaster";
-import { fetchCartProducts } from "@/api/cartProducts-api";
+import { useFetchCartProducts } from "@/api/cartProducts-api";
 
 interface Product {
   _id: string;
@@ -20,6 +20,7 @@ interface Product {
 }
 
 function Cart() {
+  const {fetchCartProducts}=useFetchCartProducts();
   const [CartProduct, setCartProduct] = useState<Product[]>([]);
   console.log(CartProduct);
 
@@ -64,6 +65,7 @@ function Cart() {
 
   // Function to load cart products
   const loadCartProducts = async () => {
+
     try {
       const response = await fetchCartProducts();
       setCartProduct(response); // Set cart products state
