@@ -14,7 +14,7 @@ const flash=require('connect-flash');
 const { log } = require('console');
 const io=require('socket.io')(5000,{cors:{origin:'*'}}); 
 const cors = require("cors")
-
+const bodyParser=require('body-parser')
 
 app.use(cors({
     origin: 'http://localhost:5173',  // React app URL
@@ -26,6 +26,8 @@ app.set('view engine','ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
  app.use(express.static(path.join(__dirname,'public')));
 // app.use(
 //     expressSession({

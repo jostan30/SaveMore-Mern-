@@ -7,7 +7,7 @@ import RetailersConsole from "./components/page/RetailersConsole.tsx";
 import Shop from "./components/page/Shop.tsx";
 import ProtectedRoute from "./components/personal/ProtectedRoute.tsx";
 import Cart from "./components/page/Cart.tsx";
-
+import PurchasedProducts from "./components/page/PurchasedProducts.tsx"
 
 const rootElement = document.getElementById("root");
 
@@ -44,7 +44,15 @@ if (rootElement) {
               <Cart />
             </ProtectedRoute>
           } />
+          <Route path="/users/buyProducts" element={
+            <ProtectedRoute userType="user">
+              <PurchasedProducts />
+            </ProtectedRoute>
+          } />
         </Route>
+       
+        
+
       </Routes>
     </BrowserRouter>
   );
