@@ -115,10 +115,10 @@ import { useState, useEffect } from "react";
 import { useFetchPurchasedProducts } from "../../api/purchasedProducts-api";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle,  } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Package, ExternalLink, Calendar, CreditCard, User, Mail, Store } from "lucide-react";
+import { ShoppingCart, Package, ExternalLink, Calendar, CreditCard,  Mail, Store } from "lucide-react";
 
 interface PurchasedProduct {
   productName: string;
