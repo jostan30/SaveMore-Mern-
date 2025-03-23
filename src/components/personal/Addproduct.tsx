@@ -29,7 +29,7 @@ interface FormDataState {
     owner: string;
 }
 
-function AddProduct({ onProductAdded, className }: { onProductAdded: () => void; className: string } ) {
+function AddProduct({ onProductAdded}: { onProductAdded: () => void } ) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [formData, setFormData] = useState<FormDataState>({
         image: null,

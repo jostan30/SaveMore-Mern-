@@ -244,7 +244,7 @@ const Dashboard = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <AddProduct onProductAdded={loadProducts} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg flex items-center" />
+          <AddProduct onProductAdded={loadProducts}  />
         </div>
 
         {/* Products area with shadow and rounded corners */}
