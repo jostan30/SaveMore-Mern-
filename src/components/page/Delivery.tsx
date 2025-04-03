@@ -244,15 +244,13 @@ export default function DeliveryAgentForm() {
                 >
                   {isSubmitting ? "Adding Agent..." : "Add Delivery Agent"}
                 </Button>
-                // Add this somewhere in your component to test
+               
 
               </CardFooter>
             </form>
           </CardContent>
         </Card>
-        <Button onClick={() => toast({ title: "Test Toast", description: "Testing the toast system" })}>
-  Test Toast
-</Button>
+        
       </div>
     </div>
   );
