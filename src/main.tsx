@@ -8,7 +8,8 @@ import Shop from "./components/page/Shop.tsx";
 import ProtectedRoute from "./components/personal/ProtectedRoute.tsx";
 import Cart from "./components/page/Cart.tsx";
 import PurchasedProducts from "./components/page/PurchasedProducts.tsx"
-
+import { PurchasedProductsView } from "./components/personal/OrderRetailer.tsx";
+import DeliveryAgentForm from "./components/page/Delivery.tsx";
 const rootElement = document.getElementById("root");
 
 if (rootElement) {
@@ -29,6 +30,24 @@ if (rootElement) {
               </ProtectedRoute>} />
           {/* Add nested routes here as needed */}
         </Route>
+        <Route path="retailers/orders">
+          <Route index
+            element={
+              <ProtectedRoute userType="owner">
+                <PurchasedProductsView />
+              </ProtectedRoute>} />
+          {/* Add nested routes here as needed */}
+        </Route>
+
+        <Route path="deliveryRegister">
+          <Route index
+            element={
+             
+                <DeliveryAgentForm />
+              } />
+          {/* Add nested routes here as needed */}
+        </Route>
+
 
         {/* User's dashboard */}
         <Route path="users">
@@ -56,6 +75,7 @@ if (rootElement) {
       </Routes>
     </BrowserRouter>
   );
+   
 } else {
   console.error("Root element not found. Please check your HTML file.");
 }

@@ -4,7 +4,8 @@ const isLoggedIn = require('../middlewares/isLoggedIn');
 const productModel = require('../models/product-model');
 const userModel = require('../models/user-model');
 const orderModel=require('../models/order-model');
-const ownerModel=require('../models/owner-model')
+const ownerModel=require('../models/owner-model');
+const deliveryModel=require('../models/delivery-model');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 const mongoose=require("mongoose");
@@ -325,3 +326,29 @@ router.get('/delete/:itemId', async (req, res) => {
   }
 });
 module.exports = router;
+
+router.post("/deliveryRegister",async(req,res)=>{
+  try {
+    let {name,contact,address,owner}=req.body;
+
+    let deliveryAgent=await deliveryModel.findOne({name});
+    if(deliveryAgent){
+       return res.json({success:false,message:"User already exists"}) 
+      }
+    else{
+      deliveryAgent=await deliveryModel.create({
+        name,
+        contact,
+        address,
+        owner,
+      })
+      return res.json({success:true,msg:"User craeted successfully"});
+    }
+  } catch (error) {
+    console.log("The server side error is",error);
+    
+    return res.json({success:false, msg: "Server side error" });
+  }
+})
+
+

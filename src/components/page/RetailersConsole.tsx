@@ -19,7 +19,8 @@ import { fetchProducts } from "@/api/products-api";
 import useAuth from "@/hooks/useAuth";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-
+import { IconShoppingCart } from "@tabler/icons-react";
+import { PurchasedProductsView } from "../personal/OrderRetailer";
 interface Product {
   _id: string;
   name: string;
@@ -39,42 +40,50 @@ function SidebarDemo() {
       label: "Dashboard",
       href: "/retailers/",
       icon: (
-        <IconDashboard className="text-neutral-100 h-5 w-5 flex-shrink-0" />
+        <IconDashboard className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Products",
       href: "/retailers/products",
       icon: (
-        <IconPackage className="text-neutral-100 h-5 w-5 flex-shrink-0" />
+        <IconPackage className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
+    },
+    {
+      label: "Purchased Products",
+      href: "/retailers/orders",
+      icon: (
+        <IconShoppingCart className="text-neutral-700 h-5 w-5 flex-shrink-0" />
+      ),
+      badge: "5", // This shows the number of new orders
     },
     {
       label: "Profile",
       href: "/retailers/profile",
       icon: (
-        <IconUser className="text-neutral-100 h-5 w-5 flex-shrink-0" />
+        <IconUser className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Settings",
       href: "/retailers/setting",
       icon: (
-        <IconSettings className="text-neutral-100 h-5 w-5 flex-shrink-0" />
+        <IconSettings className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Logout",
       href: "/",
       icon: (
-        <IconArrowLeft className="text-neutral-100 h-5 w-5 flex-shrink-0" />
+        <IconArrowLeft className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-50 flex-1 mx-auto overflow-hidden h-screen w-screen">
+    <div className="flex flex-col md:flex-row bg-gray-400 flex-1 mx-auto overflow-hidden h-screen w-screen">
       <Sidebar open={open} setOpen={setOpen} animate={false} className="bg-gradient-to-b from-blue-600 to-blue-800 border-r border-blue-700">
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -85,6 +94,11 @@ function SidebarDemo() {
                   key={idx} 
                   link={link} 
                   className="text-white hover:bg-blue-700 transition-colors rounded-lg px-3 py-2"
+                  badge={link.badge ? (
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                      {link.badge}
+                    </span>
+                  ) : null}
                 />
               ))}
             </div>
@@ -110,7 +124,14 @@ function SidebarDemo() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard />
+      {/* Main content area */}
+      <div className="flex-1 overflow-auto">
+        {window.location.pathname === "/retailers/orders" ? (
+          <PurchasedProductsView />
+        ) : (
+          <Dashboard />
+        )}
+      </div>
       <Toaster />
     </div>
   );
@@ -128,7 +149,7 @@ export const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-bold whitespace-pre"
+        className="font-bold whitespace-pre text-black"
       >
         SaveMore
       </motion.span>

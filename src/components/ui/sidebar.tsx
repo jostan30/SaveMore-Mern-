@@ -158,12 +158,16 @@ export const MobileSidebar = ({
   );
 };
 
+import { ReactNode } from "react";
+
 export const SidebarLink = ({
   link,
   className,
+  badge,
 }: {
   link: Links;
   className?: string;
+  badge?: ReactNode;
 }) => {
   const { open, animate } = useSidebar();
   const navigate = useNavigate();
@@ -176,7 +180,7 @@ export const SidebarLink = ({
     <div
       onClick={handleNavigation}
       className={cn(
-        "flex items-center justify-start gap-2 cursor-pointer group/sidebar py-2",
+        "relative flex items-center justify-start gap-2 cursor-pointer group/sidebar py-2",
         className
       )}
     >
@@ -191,6 +195,8 @@ export const SidebarLink = ({
       >
         {link.label}
       </motion.span>
+
+      {badge && <div className="absolute right-2">{badge}</div>}
     </div>
   );
 };
