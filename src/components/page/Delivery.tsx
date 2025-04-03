@@ -112,6 +112,8 @@ export default function DeliveryAgentForm() {
         if (result.agent) {
           setAgents(prev => [...prev, result.agent]);
         }
+        console.log("The agents are",agents);
+        
       } else {
         toast({
           variant: "destructive",
