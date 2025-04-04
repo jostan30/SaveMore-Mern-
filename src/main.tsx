@@ -8,7 +8,7 @@ import Shop from "./components/page/Shop.tsx";
 import ProtectedRoute from "./components/personal/ProtectedRoute.tsx";
 import Cart from "./components/page/Cart.tsx";
 import PurchasedProducts from "./components/page/PurchasedProducts.tsx"
-import { PurchasedProductsView } from "./components/personal/OrderRetailer.tsx";
+
 import DeliveryAgentForm from "./components/page/Delivery.tsx";
 const rootElement = document.getElementById("root");
 

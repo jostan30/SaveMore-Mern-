@@ -219,7 +219,7 @@ export function PurchasedProductsView() {
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<PurchasedProduct | null>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
-  const { isLoggedIn, userData, token } = useAuth({ userType: "owner" });
+  const { isLoggedIn,  token } = useAuth({ userType: "owner" });
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
 
   useEffect(() => {
