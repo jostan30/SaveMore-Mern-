@@ -28,6 +28,9 @@ router.post('/create', upload.single('image'), async (req, res) => {
             owner: owner._id
         })
         console.log(product);
+        await ownerModel.findByIdAndUpdate(owner._id,{
+            $push:{products:product._id}
+        })
         res.status(201).json({ success: true, message: "Product created successfully", product });
     } catch (err) {
         console.log(err);

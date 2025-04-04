@@ -57,18 +57,21 @@ export const Sidebar = ({
   open,
   setOpen,
   animate,
+  className, // ✅ Added className
 }: {
   children: React.ReactNode;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
+  className?: string; // ✅ Ensure className is optional
 }) => {
   return (
     <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
-      {children}
+      <div className={className}>{children}</div> {/* ✅ Apply className here */}
     </SidebarProvider>
   );
 };
+
 
 export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
   return (
@@ -155,17 +158,22 @@ export const MobileSidebar = ({
   );
 };
 
+import { ReactNode } from "react";
+
 export const SidebarLink = ({
   link,
   className,
+  badge,
 }: {
   link: Links;
   className?: string;
+  badge?: ReactNode;
 }) => {
   const { open, animate } = useSidebar();
   const navigate = useNavigate();
 
   const handleNavigation = () => {
+    // Use the link.href directly since you already fixed the paths in your links array
     navigate(link.href);
   };
 
@@ -173,7 +181,7 @@ export const SidebarLink = ({
     <div
       onClick={handleNavigation}
       className={cn(
-        "flex items-center justify-start gap-2 cursor-pointer group/sidebar py-2",
+        "relative flex items-center justify-start gap-2 cursor-pointer group/sidebar py-2",
         className
       )}
     >
@@ -188,6 +196,8 @@ export const SidebarLink = ({
       >
         {link.label}
       </motion.span>
+
+      {badge && <div className="absolute right-2">{badge}</div>}
     </div>
   );
 };

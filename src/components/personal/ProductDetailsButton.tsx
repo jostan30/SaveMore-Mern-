@@ -49,16 +49,18 @@ const ProductDetailsButton = ({ product }: { product: Product }) => {
 
     const AddToCart = async () => {
         try {
-            console.log(token)
+            console.log("The tken of user in add to cart component is",token)
             if (!token) {
                 console.log("You must be logged in to add items to the cart!");
                 return;
             }
             const data = {
                 product_id: product._id,
-                quantity:units
+                quantity:units,
+                name:product.name
             }
-
+            console.log("The data in add to cart is",product._id);
+            
             const response = await axios.post(
                 `${API_BASE_URL}/addtocart`,   // URL
                 data,                         // The request body (should be the second argument)
@@ -69,7 +71,8 @@ const ProductDetailsButton = ({ product }: { product: Product }) => {
                     },
                 }
             );
-
+            console.log("The response recieved in details button is",response);
+            
             if (response.status === 200) {
                 toast({
                     title: `Product added sucessfully !!`,

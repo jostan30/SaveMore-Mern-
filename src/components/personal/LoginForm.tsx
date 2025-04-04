@@ -45,7 +45,7 @@ export function LoginForm({ isRetailer }: LoginFormProps) {
 
       const result = await response.json();
       
-      if (response.ok && result.sucess) {
+      if (response.ok && result.success) {
         toast({
           title: "Login successful!",
           description: `${
