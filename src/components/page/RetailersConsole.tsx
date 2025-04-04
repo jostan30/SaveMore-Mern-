@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
+import { Routes,Route } from "react-router-dom";
+import Shop from "./Shop";
 import {
   IconArrowLeft,
   IconDashboard,
@@ -38,7 +40,7 @@ function SidebarDemo() {
   const links = [
     {
       label: "Dashboard",
-      href: "/retailers/",
+      href: "/retailers",
       icon: (
         <IconDashboard className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
@@ -67,7 +69,7 @@ function SidebarDemo() {
     },
     {
       label: "Settings",
-      href: "/retailers/setting",
+      href: "/retailers/settings",
       icon: (
         <IconSettings className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
@@ -83,7 +85,7 @@ function SidebarDemo() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-400 flex-1 mx-auto overflow-hidden h-screen w-screen">
+    <div className="flex flex-col md:flex-row bg-white flex-1 mx-auto overflow-hidden h-screen w-screen">
       <Sidebar open={open} setOpen={setOpen} animate={false} className="bg-gradient-to-b from-blue-600 to-blue-800 border-r border-blue-700">
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -126,11 +128,14 @@ function SidebarDemo() {
       </Sidebar>
       {/* Main content area */}
       <div className="flex-1 overflow-auto">
-        {window.location.pathname === "/retailers/orders" ? (
-          <PurchasedProductsView />
-        ) : (
-          <Dashboard />
-        )}
+      <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/orders" element={<PurchasedProductsView />} />
+          <Route path="/products" element={<Shop />} />
+          <Route path="/profile" />
+          <Route path="/setting" />
+          {/* Add other routes as needed */}
+        </Routes>
       </div>
       <Toaster />
     </div>

@@ -173,6 +173,7 @@ export const SidebarLink = ({
   const navigate = useNavigate();
 
   const handleNavigation = () => {
+    // Use the link.href directly since you already fixed the paths in your links array
     navigate(link.href);
   };
 

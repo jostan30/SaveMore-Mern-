@@ -22,22 +22,9 @@ if (rootElement) {
         <Route path="/" element={<App />} />
 
         {/* Retailer dashboard */}
-        <Route path="retailers">
-          <Route index
-            element={
-              <ProtectedRoute userType="owner">
-                <RetailersConsole />
-              </ProtectedRoute>} />
-          {/* Add nested routes here as needed */}
-        </Route>
-        <Route path="retailers/orders">
-          <Route index
-            element={
-              <ProtectedRoute userType="owner">
-                <PurchasedProductsView />
-              </ProtectedRoute>} />
-          {/* Add nested routes here as needed */}
-        </Route>
+        <Route path="/retailers/*" element={<ProtectedRoute userType="owner"><RetailersConsole /></ProtectedRoute>} />
+
+       
 
         <Route path="deliveryRegister">
           <Route index
