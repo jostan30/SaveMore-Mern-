@@ -10,6 +10,8 @@ interface Product {
   description: string;
   units:number;
   image: string; // Base64 string
+  expiryDate: string; // ISO date string
+  daysRemaining: number;
 }
 
 interface RetailerDashboardProps {

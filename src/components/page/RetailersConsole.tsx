@@ -34,6 +34,8 @@ interface Product {
   description: string;
   image: string;
   owner: string;
+  expiryDate: string; // ISO date string
+  daysRemaining: number;
 }
 
 function SidebarDemo() {
