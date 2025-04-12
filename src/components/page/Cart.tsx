@@ -503,6 +503,8 @@ interface Product {
   units: number;
   image: string;
   quantity: number;
+  expiryDate: string; // ISO date string
+  daysRemaining: number;
 }
 
 interface CheckoutInfo {

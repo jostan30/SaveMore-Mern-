@@ -280,6 +280,8 @@
 // }
 
 // export default Shop;
+
+
 import { fetchProducts } from "@/api/products-api";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
@@ -304,6 +306,8 @@ interface Product {
   units: number;
   image: string;
   quantity: number;
+  expiryDate: string; // ISO date string
+  daysRemaining: number;
 }
 
 export const Logo = () => {

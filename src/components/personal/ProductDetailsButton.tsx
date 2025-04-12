@@ -276,6 +276,7 @@ const ProductDetailsButton = ({ product }: { product: Product }) => {
                 quantity: units,
                 name: product.name
             }
+            console.log("The data in product cart isss",data);
             
             const response = await axios.post(
                 `${API_BASE_URL}/addtocart`,
