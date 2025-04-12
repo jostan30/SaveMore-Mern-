@@ -290,7 +290,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "../ui/badge";
 import { useFetchCartProducts } from "@/api/cartProducts-api";
 import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface Product {
