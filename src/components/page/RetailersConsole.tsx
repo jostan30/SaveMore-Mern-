@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
 import { Routes,Route } from "react-router-dom";
-import Shop from "./Shop";
+//import Shop from "./Shop";
 import {
   IconArrowLeft,
   IconDashboard,
