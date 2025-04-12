@@ -5,6 +5,9 @@ const path=require('path');
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 const db=require('./config/mongoose-connection');
+const bodyParser=require('body-parser')
+
+
 const ownersRouter=require('./routes/ownersRouter');
 const userRouter=require('./routes/usersRouter');
 const productsRouter=require('./routes/productsRouter');
@@ -14,20 +17,20 @@ const flash=require('connect-flash');
 const { log } = require('console');
 const io=require('socket.io')(5000,{cors:{origin:'*'}}); 
 const cors = require("cors")
-const bodyParser=require('body-parser')
+
 
 app.use(cors({
     origin: 'http://localhost:5173',  // React app URL
     credentials: true                 // Allow cookies to be sent
 }));
 require("dotenv").config();
-// console.log(process.env.EXPRESS_SESSION_SECRET);
+ console.log(process.env.JWT_KEY);
 app.set('view engine','ejs');
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true}));
 app.use(cookieParser());
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
+
  app.use(express.static(path.join(__dirname,'public')));
 // app.use(
 //     expressSession({

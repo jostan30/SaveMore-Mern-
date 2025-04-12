@@ -45,13 +45,7 @@ function SidebarDemo() {
         <IconDashboard className="text-neutral-700 h-5 w-5 flex-shrink-0" />
       ),
     },
-    {
-      label: "Products",
-      href: "/retailers/products",
-      icon: (
-        <IconPackage className="text-neutral-700 h-5 w-5 flex-shrink-0" />
-      ),
-    },
+   
     {
       label: "Purchased Products",
       href: "/retailers/orders",
@@ -131,7 +125,7 @@ function SidebarDemo() {
       <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/orders" element={<PurchasedProductsView />} />
-          <Route path="/products" element={<Shop />} />
+         
           <Route path="/profile" />
           <Route path="/setting" />
           {/* Add other routes as needed */}
