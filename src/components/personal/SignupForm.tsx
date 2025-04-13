@@ -219,8 +219,9 @@ export function SignupForm({ isRetailer }: SignupFormProps) {
       });
 
       const result = await response.json();
+      console.log("The result of signUp is",result);
       
-      if (response.ok && result.sucess) {
+      if (response.ok && result.success) {
         toast({
           title: "Registration successful!",
           description: "Please login to continue",

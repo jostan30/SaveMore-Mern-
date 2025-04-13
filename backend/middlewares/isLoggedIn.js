@@ -17,9 +17,10 @@ module.exports = async function (req, res, next) {
     if (!user) {
       return res.json({ success: false, message: "User not found" });
     }
-  
+     console.log("THE USER IS",user);
+     
     // Pass control to the next middleware/route
-    return res.json({ success: true, message: "token found" });
+    return res.json({ success: true, message: "token found",user });
   
   } catch (err) {
     return res.json({ success: false, message: "Invalid or expired token" });
