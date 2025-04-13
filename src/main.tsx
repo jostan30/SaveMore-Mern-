@@ -8,8 +8,9 @@ import Shop from "./components/page/Shop.tsx";
 import ProtectedRoute from "./components/personal/ProtectedRoute.tsx";
 import Cart from "./components/page/Cart.tsx";
 import PurchasedProducts from "./components/page/PurchasedProducts.tsx"
-
+import BuyerChatPage from "./components/page/BuyerChatPage.tsx";
 import DeliveryAgentForm from "./components/page/Delivery.tsx";
+import SellerChatPage from "./components/page/SellerChatPage.tsx";
 const rootElement = document.getElementById("root");
 
 if (rootElement) {
@@ -24,7 +25,13 @@ if (rootElement) {
         {/* Retailer dashboard */}
         <Route path="/retailers/*" element={<ProtectedRoute userType="owner"><RetailersConsole /></ProtectedRoute>} />
 
-       
+        <Route
+         path="/chat/buyer/:productId" 
+         element={<ProtectedRoute userType="user"> <BuyerChatPage /></ProtectedRoute>} />
+
+<Route
+         path="/chat/seller" 
+         element={<ProtectedRoute userType="owner"> <SellerChatPage /></ProtectedRoute>} />
 
         <Route path="deliveryRegister">
           <Route index
