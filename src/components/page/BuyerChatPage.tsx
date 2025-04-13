@@ -22,6 +22,7 @@ import { fetchProducts } from "@/api/products-api";
   
     const [ownerInfo, setOwnerInfo] = useState< string | null>(null);
     const [product, setProduct] = useState<any>(null); // for future use if needed
+  console.log("the product is",product);
   
     useEffect(() => {
       const fetchProductDetails = async () => {

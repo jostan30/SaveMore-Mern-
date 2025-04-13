@@ -22,7 +22,8 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
   const [isTyping, setIsTyping] = useState(false);
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  console.log("Typing",setIsTyping);
+  
   // Auto-scroll to the latest message
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -51,8 +52,10 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
         sender: `${userType}`,
         timestamp: new Date()
       }]);
+      console.log("th uer id is",userId);
     });
-
+   
+    
     chatService.onUserJoined((joinedUserType) => {
       setMessages(prev => [...prev, {
         text: `${joinedUserType} has joined the chat`,
