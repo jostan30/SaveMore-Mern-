@@ -22,11 +22,20 @@ module.exports.registerUser = async (req, res) => {
             let token = generateToken(user);
             console.log("The user is craeted and token is",token);
             
-            res.cookie("token", token, {
-               httpOnly: true,
-               secure: true,      // Set this to true if using https
-               sameSite: 'None'    // This allows the cookie to be sent cross-origin
-           });
+         //    res.cookie("token", token, {
+         //       httpOnly: true,
+         //       secure: false,      // Set this to true if using https
+         //       sameSite: 'None'    // This allows the cookie to be sent cross-origin
+         //   });
+
+         res.cookie("token", token, {
+            httpOnly: true,              // Makes the cookie inaccessible to JavaScript
+            secure: true,                // Cookie only sent over HTTPS (in production)
+            sameSite: 'None',            // Necessary for cross-origin cookies
+            domain: '.save-more-mern.vercel.app', // Domain for which the cookie is valid
+            path: '/',                   // Path for the cookie (root path in this case)
+            maxAge: 3600000              // Cookie expiration time (1 hour in milliseconds)
+        });
             return res.json({success:true, msg: "User Created successfully!!" });
          });
       });
