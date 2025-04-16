@@ -131,6 +131,8 @@ export const LogoIcon = () => {
 const Dashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const userData = useAuth({userType:"owner"}).userData;
+  console.log(userData);
+  
   const userId:string = userData?._id || "";
   console.log(userId);
 

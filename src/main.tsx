@@ -45,6 +45,7 @@ if (rootElement) {
           <Route path="/users/cart" element={
             <ProtectedRoute userType="user">
               <Cart />
+              <Footer/>
             </ProtectedRoute>
           } />
         </Route>

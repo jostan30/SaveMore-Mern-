@@ -8,6 +8,7 @@ interface AuthStatus {
   loading: boolean;
   error: string | null;
   userData: Record<string, any> | null; // Allow any object or null
+  token:string | null;
 }
 
 interface AuthResponse {
@@ -23,6 +24,7 @@ const useAuth = ({ userType }: { userType: string }) => {
     loading: true,
     error: null,
     userData: null,
+    token:null
   });
 
   useEffect(() => {
@@ -59,6 +61,7 @@ const useAuth = ({ userType }: { userType: string }) => {
           loading: false,
           error: null,
           userData:  userData || null, 
+          token
         });
       } catch (error: any) {
         toast({
@@ -71,6 +74,7 @@ const useAuth = ({ userType }: { userType: string }) => {
           loading: false,
           error: error.message || "An error occurred",
           userData: null,
+          token:null
         });
       }
     };

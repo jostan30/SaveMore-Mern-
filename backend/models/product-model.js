@@ -1,23 +1,15 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
-const productSchema=mongoose.Schema({
-       image:Buffer,
-       name:String,
-       price:Number,
-       units:{
-        type:Number,
-        default:1
-       },
-       discount:{
-        type:Number,
-        default:0
-       },
-       ShopName:String,
-       Address:String,
-       description:String,
-       owner:{type:mongoose.Schema.Types.ObjectId,
-              ref:"owner-model"
-            }
-})
+const productSchema = new mongoose.Schema({
+    image: Buffer,
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    units: { type: Number, default: 1 },
+    discount: { type: Number, default: 0 },
+    ShopName: { type: String, required: true },
+    Address: { type: String, required: true },
+    description: String,
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "owner-model", required: true } // Reference to the owner
+});
 
-module.exports=mongoose.model('product-model',productSchema);
+module.exports = mongoose.model("product-model", productSchema);
