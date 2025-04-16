@@ -20,7 +20,7 @@ const cors = require("cors")
 
 
 app.use(cors({
-    origin: 'http://localhost:5173',  // React app URL
+    origin: ['http://localhost:5173','https://save-more-mern.vercel.app/' ], // React app URL
     credentials: true                 // Allow cookies to be sent
 }));
 require("dotenv").config();
@@ -52,7 +52,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: ["http://localhost:5173","https://save-more-mern.vercel.app/"],
         methods: ["GET", "POST"],
         credentials: true
     }
