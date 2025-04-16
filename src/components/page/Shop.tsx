@@ -2,7 +2,7 @@ import { fetchProducts } from "@/api/products-api";
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import RetailerDashboard from "../personal/RetailerDashboard";
-import { ShoppingCartIcon } from "lucide-react";
+import { Loader, ShoppingCartIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Badge } from "../ui/badge";
@@ -25,13 +25,13 @@ export const Logo = () => {
   return (
     <Link
       to="/users"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+      className="relative z-20 flex items-center py-1 space-x-2 text-sm font-normal text-black"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <div className="flex-shrink-0 w-6 h-5 bg-black rounded-tl-lg rounded-tr-sm rounded-bl-sm rounded-br-lg dark:bg-white" />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
+        className="font-medium text-black whitespace-pre dark:text-white"
       >
         SaveMore
       </motion.span>
@@ -43,9 +43,9 @@ export const LogoIcon = () => {
   return (
     <Link
       to="/users"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+      className="relative z-20 flex items-center py-1 space-x-2 text-sm font-normal text-black"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <div className="flex-shrink-0 w-6 h-5 bg-black rounded-tl-lg rounded-tr-sm rounded-bl-sm rounded-br-lg dark:bg-white" />
     </Link>
   );
 };
@@ -53,6 +53,7 @@ export const LogoIcon = () => {
 function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cartProduct, setCartProduct] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Function to load cart products
@@ -78,38 +79,48 @@ function Shop() {
 
   // Fetch products and cart on mount
   useEffect(() => {
+    setLoading(true);
     loadProducts();
     loadCartProducts();
-  }, [products,cartProduct]);
+    setLoading(false);
+  }, [cartProduct]);
 
 
   return (
-    <div className="flex flex-1 flex-col h-full">
-      <div className="p-2 md:p-10 border border-neutral-200 dark:border-neutral-700 items-center bg-white dark:bg-neutral-900 flex flex-col gap-4 flex-1 w-full h-full">
+
+
+    <div className="flex flex-col flex-1 h-full">
+      <div className="flex flex-col items-center flex-1 w-full h-full gap-4 p-2 bg-white border md:p-10 border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900">
         <Logo />
         {/* Header */}
-        <div className="flex h-20 w-full rounded-lg dark:bg-neutral-800 align-middle justify-center px-2 space-x-3 ">
+        <div className="flex justify-center w-full h-20 px-2 space-x-3 align-middle rounded-lg dark:bg-neutral-800 ">
           {/* Search bar */}
           <Input className="md:w-[40%] w-[70%] border-black" placeholder="Search item" />
           {/* Cart */}
           <div className="relative">
             <ShoppingCartIcon
-              className="mt-1 cursor-pointer w-8 h-8"
-              onClick={() => { navigate("/users/cart", {});}}
+              className="w-8 h-8 mt-1 cursor-pointer"
+              onClick={() => { navigate("/users/cart", {}); }}
             />
             <Badge
               variant="destructive"
-              className="absolute -top-2 -right-2 text-xs px-2 rounded-xl cursor-pointer"
+              className="absolute px-2 text-xs cursor-pointer -top-2 -right-2 rounded-xl"
             >
               {cartProduct ? cartProduct.length : 0}
             </Badge>
           </div>
         </div>
 
-        {/* Display items added by the retailer */}
-        <div className="flex-1 justify-center min-h-0 overflow-hidden">
-          <RetailerDashboard products={products} />
-        </div>
+        {
+
+          //Display items added by the retailer
+          <div className="justify-center flex-1 min-h-0 overflow-hidden">
+            <RetailerDashboard products={products} loading={loading} />
+          </div>
+
+        }
+
+
       </div>
     </div>
   );

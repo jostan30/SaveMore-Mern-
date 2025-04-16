@@ -54,12 +54,16 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { LoginForm } from "./LoginForm";
 import { SignupForm } from "./SignupForm";
+import ProtectedRoute from "./ProtectedRoute";
 
 function Authentication() {
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const [userType, setUserType] = useState<"buyer" | "retailer">("buyer");
-
+  
   return (
+    <ProtectedRoute userType={
+      userType == "retailer" ? "owner": "user"
+    }>
     <div className="flex flex-col w-full max-w-5xl mx-auto h-full">
       {/* Main Container */}
       <div className="flex flex-col items-center space-y-6 w-full">
@@ -150,6 +154,7 @@ function Authentication() {
         </Tabs>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 

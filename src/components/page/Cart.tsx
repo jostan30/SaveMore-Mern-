@@ -5,6 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { Toaster } from "../ui/toaster";
 import { fetchCartProducts } from "@/api/cartProducts-api";
+import { Loader } from "lucide-react";
 
 interface Product {
   _id: string;
@@ -21,7 +22,8 @@ interface Product {
 
 function Cart() {
   const [CartProduct, setCartProduct] = useState<Product[]>([]);
-  console.log(CartProduct);
+  const [loading ,setLoading] =useState(false);
+  //console.log(CartProduct);
 
   const token = document.cookie
     .split("; ")
@@ -42,7 +44,7 @@ function Cart() {
         },
         credentials: "include",
       });
-      console.log(response)
+      //console.log(response)
       if (response.ok) {
         toast({
           title: "Item Removed Successfully",
@@ -65,8 +67,10 @@ function Cart() {
   // Function to load cart products
   const loadCartProducts = async () => {
     try {
+      setLoading(true);
       const response = await fetchCartProducts();
       setCartProduct(response); // Set cart products state
+      setLoading(false);
     } catch (error) {
       console.log("Error fetching cart products:", error);
     }
@@ -86,19 +90,25 @@ function Cart() {
           <Button variant="outline">Enter Address</Button>
         </div>
         
-        {/* Cart Products */}
-        <div className="flex-1 justify-center p-4 bg-[#fff] mt-2 overflow-y-auto">
+        {
+          loading ? (
+            <div className="flex items-center justify-center h-screen">
+              <Loader />
+              </div>
+          ) :(
+            // Cart Products
+            <div className="flex-1 justify-center p-4 bg-[#fff] mt-2 overflow-y-auto">
           {Array.isArray(CartProduct) && CartProduct.length > 0 ? (
             CartProduct.map((product: Product, index: number) => (
               <div
               key={index}
-                className="flex justify-between items-center p-4 border-b border-gray-300"
+                className="flex items-center justify-between p-4 border-b border-gray-300"
               >
                 <div className="flex items-center space-x-4">
                   <img
                     src={`data:image/png;base64,${product.image}`}
                     alt={product.name}
-                    className="md:w-40 md:h-40 h-20 w-20 object-cover rounded-lg shadow-md border border-gray-200"
+                    className="object-cover w-20 h-20 border border-gray-200 rounded-lg shadow-md md:w-40 md:h-40"
                   />
                   <div>
                     <h3 className="text-lg font-semibold">{product.name}</h3>
@@ -108,7 +118,7 @@ function Cart() {
                 <div className="flex flex-col items-center">
                   <p className="text-sm text-gray-600">Price: ${product.price}</p>
                   <p className="text-sm text-gray-600">Quantity: {product.quantity}</p> {/* Displaying the quantity */}
-                  <div className="flex space-x-2 mt-2">
+                  <div className="flex mt-2 space-x-2">
                     <Button onClick={() => handleBuyNow(product._id)}>
                       Buy Now
                     </Button>
@@ -123,9 +133,13 @@ function Cart() {
               </div>
             ))
           ) : (
-            <p className="text-center text-xl ">Your cart is empty!</p>
+            <p className="text-xl text-center ">Your cart is empty!</p>
           )}
         </div>
+          )
+        }
+       
+        
         
       </div>
       <Toaster />

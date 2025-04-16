@@ -9,7 +9,7 @@ mongoose
                                  //Remove-Item Env:DEBUG
 })
 .catch(function(err){
-    console.log("err");
+    console.log("err",err);
 })
 
 module.exports=mongoose.connection;

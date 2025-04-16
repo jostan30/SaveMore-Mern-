@@ -15,6 +15,12 @@ const ProtectedRoute = ({ children,userType }:{children:ReactNode ,userType:stri
 
   if (!isLoggedIn) return <Navigate to="/" replace />;
 
+  if (isLoggedIn && location.pathname === "/") {
+    const redirectPath = userType === "retailer" ? "/retialers" : "/users"; 
+    return <Navigate to={redirectPath} replace />;
+  }
+
+
   return <>{children}</>;
 };
 

@@ -7,6 +7,7 @@ import RetailersConsole from "./components/page/RetailersConsole.tsx";
 import Shop from "./components/page/Shop.tsx";
 import ProtectedRoute from "./components/personal/ProtectedRoute.tsx";
 import Cart from "./components/page/Cart.tsx";
+import Footer from "./components/personal/Footer.tsx";
 
 
 const rootElement = document.getElementById("root");
@@ -26,6 +27,7 @@ if (rootElement) {
             element={
               <ProtectedRoute userType="owner">
                 <RetailersConsole />
+                <Footer/>
               </ProtectedRoute>} />
           {/* Add nested routes here as needed */}
         </Route>
@@ -36,6 +38,7 @@ if (rootElement) {
             element={
               <ProtectedRoute userType="user">
                 <Shop />
+                <Footer/>
               </ProtectedRoute>
             } />
           {/* Add nested routes here as needed */}
