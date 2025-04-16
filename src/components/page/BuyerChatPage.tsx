@@ -13,13 +13,11 @@ import { fetchProducts } from "@/api/products-api";
 
   const BuyerChatPage: React.FC = () => {
     const { productId } = useParams();
-    console.log("The product is in buyerPage and product id is",productId);
-    
+  
     const navigate = useNavigate();
   
-    const { isLoggedIn, loading, userData } = useAuth({ userType: 'user' });
-  console.log("The user data is",userData);
-  
+    const { isLoggedIn, loading, userData  ,userRole } = useAuth();
+ 
     const [ownerInfo, setOwnerInfo] = useState< string | null>(null);
     const [product, setProduct] = useState<any>(null); // for future use if needed
   console.log("the product is",product);
@@ -76,8 +74,8 @@ import { fetchProducts } from "@/api/products-api";
       console.log("User not logged in");
       
       return (
-        <div className="flex justify-center items-center h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500">Log In First</div>
+        <div className="flex items-center justify-center h-screen">
+          <div className="w-12 h-12 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin">Log In First</div>
         </div>
       );
     }
@@ -87,7 +85,7 @@ import { fetchProducts } from "@/api/products-api";
       <ChatComponent
         roomId={ownerInfo} // Use owner._id as roomId
         userId={userData._id}
-        userType="user"
+        userType={userRole}
         productId={productId}
       />
     );

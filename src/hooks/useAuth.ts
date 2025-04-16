@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useToast } from "./use-toast";
- 
+
 interface UserData {
   _id: string;
   email:string;

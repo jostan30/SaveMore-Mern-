@@ -4,8 +4,7 @@ import useAuth from '@/hooks/useAuth';
 const API_BASE_URL = "http://localhost:3000"; // Ensure this matches your backend
 
 export const useFetchPurchasedProducts =() => {
-  const authStatus=useAuth({userType:"user"});
-  console.log("The token is",authStatus);
+  const authStatus=useAuth();
   const fetchPurchasedProducts=async()=>{
     try {
       if(authStatus.loading){

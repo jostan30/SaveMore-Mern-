@@ -12,7 +12,7 @@ interface ChatMessage {
 interface ChatComponentProps {
   roomId: string;
   userId: string;
-  userType: 'owner' | 'user';
+  userType: string |null;
   productId?: string;
 }
 

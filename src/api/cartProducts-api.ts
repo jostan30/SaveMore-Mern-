@@ -2,9 +2,8 @@ import axios from "axios";
 import useAuth from "@/hooks/useAuth";
 const API_BASE_URL = "http://localhost:3000"; // Ensure this matches your backend
 export const useFetchCartProducts=()=>{
-  const authStatus = useAuth({ userType: "user" }); // Get the token from useAuth
-  console.log("The token is",authStatus);
-  
+  const authStatus = useAuth(); // Get the token from useAuth
+
   const fetchCartProducts = async () => {
   
     try {

@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 interface ChatRoom {
   roomId: string;
   userId: string;
-  userType: 'owner' | 'user';
+  userType:string |null;
 }
 
 type MessageHandler = (data: { userId: string; message: string; userType: string }) => void;
@@ -67,7 +67,7 @@ class ChatService {
     return true;
   }
 
-  public sendMessage(roomId: string, userId: string, message: string, userType: 'owner' | 'user') {
+  public sendMessage(roomId: string, userId: string, message: string, userType: string |null) {
     if (!this.socket) {
       console.error('Cannot send message: socket not initialized');
       return false;
