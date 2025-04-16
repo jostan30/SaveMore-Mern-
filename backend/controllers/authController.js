@@ -24,7 +24,7 @@ module.exports.registerUser = async (req, res) => {
             
             res.cookie("token", token, {
                httpOnly: true,
-               secure: false,      // Set this to true if using https
+               secure: true,      // Set this to true if using https
                sameSite: 'None'    // This allows the cookie to be sent cross-origin
            });
             return res.json({success:true, msg: "User Created successfully!!" });
