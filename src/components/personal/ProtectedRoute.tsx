@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
-const ProtectedRoute = ({ children,userType }:{children:ReactNode ,userType:string}) => {
-  const { isLoggedIn, loading, error } = useAuth({userType});
+const ProtectedRoute = ({ children }:{children:ReactNode }) => {
+  const { isLoggedIn, loading, error  } = useAuth();
 
   if (loading) return <div>Loading...</div>;
 
@@ -12,16 +12,14 @@ const ProtectedRoute = ({ children,userType }:{children:ReactNode ,userType:stri
     console.log(error);
     return <Navigate to="/" replace />
 }
+  
 
-  if (!isLoggedIn) return <Navigate to="/" replace />;
+  if (!isLoggedIn ) return <Navigate to="/" replace />;
 
-  if (isLoggedIn && location.pathname === "/") {
-    const redirectPath = userType === "retailer" ? "/retialers" : "/users"; 
-    return <Navigate to={redirectPath} replace />;
-  }
+ 
 
 
-  return <>{children}</>;
+  return  <>{children}</>;
 };
 
 export default ProtectedRoute;

@@ -30,8 +30,9 @@ export function LoginForm({ isRetailer }: LoginFormProps) {
       password: target.password.value,
     };
 
-    // const api = isRetailer ? "owners" : "users";
-    const apiUrl = `http://localhost:3000/users/login`;
+    //this is because 2 different endpoints are made 
+    const api = isRetailer ? "owners" : "users";
+    const apiUrl = `http://localhost:3000/${api}/login`;
 
     try {
       const response = await fetch(apiUrl, {

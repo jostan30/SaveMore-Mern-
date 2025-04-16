@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const ownerSchema = new mongoose.Schema({
+    role:{
+        type:String,
+        default: "owner",
+    },
     fullname: {
         type: String,
         minLength: 3,

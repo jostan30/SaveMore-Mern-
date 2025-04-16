@@ -109,19 +109,19 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
  return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header with improved styling */}
-      <div className="bg-white shadow-md p-4 border-b border-gray-200">
+      <div className="p-4 bg-white border-b border-gray-200 shadow-md">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">
               Chat<span className="text-blue-600">Connect</span>
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-sm text-gray-600">
               {userType === 'user' 
                 ? 'Connect with distributors and find great deals!'
                 : 'Connect with buyers interested in your products!'}
             </p>
           </div>
-          <div className="bg-blue-100 px-3 py-1 rounded-full text-blue-800 text-sm font-medium">
+          <div className="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
             {userType === 'user' ? 'Buyer' : 'Seller'}
           </div>
         </div>
@@ -138,20 +138,20 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
       {/* Chat messages container with improved styling */}
       <div 
         ref={messageContainerRef}
-        className="flex-1 p-4 overflow-y-auto bg-gray-50 bg-opacity-50"
+        className="flex-1 p-4 overflow-y-auto bg-opacity-50 bg-gray-50"
         style={{
           backgroundImage: "radial-gradient(circle at 25px 25px, rgba(0, 0, 0, 0.05) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(0, 0, 0, 0.025) 2%, transparent 0%)",
           backgroundSize: "100px 100px"
         }}
       >
-        <div className="flex flex-col space-y-3 max-w-3xl mx-auto">
+        <div className="flex flex-col max-w-3xl mx-auto space-y-3">
           {messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${message.position === 'right' ? 'justify-end' : message.isNotification ? 'justify-center' : 'justify-start'}`}
             >
               {!message.isNotification && message.position === 'left' && (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-2 mt-1 text-xs font-medium text-gray-700">
+                <div className="flex items-center justify-center w-8 h-8 mt-1 mr-2 text-xs font-medium text-gray-700 bg-gray-300 rounded-full">
                   {message.sender ? message.sender.charAt(0).toUpperCase() : 'U'}
                 </div>
               )}
@@ -169,11 +169,11 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
                 }}
               >
                 {message.sender && !message.isNotification && (
-                  <div className="text-xs font-medium opacity-75 mb-1">
+                  <div className="mb-1 text-xs font-medium opacity-75">
                     {message.sender}
                   </div>
                 )}
-                <div className="flex justify-between items-end gap-2">
+                <div className="flex items-end justify-between gap-2">
                   <div className={`${message.isNotification ? 'text-center w-full' : ''}`}>
                     {message.text}
                   </div>
@@ -186,7 +186,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
               </div>
               
               {!message.isNotification && message.position === 'right' && (
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center ml-2 mt-1 text-xs font-medium text-white">
+                <div className="flex items-center justify-center w-8 h-8 mt-1 ml-2 text-xs font-medium text-white bg-blue-600 rounded-full">
                   {userType === 'user' ? 'B' : 'S'}
                 </div>
               )}
@@ -195,11 +195,11 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
           
           {isTyping && (
             <div className="flex justify-start">
-              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-2 text-xs font-medium text-gray-700">
+              <div className="flex items-center justify-center w-8 h-8 mr-2 text-xs font-medium text-gray-700 bg-gray-300 rounded-full">
                 ?
               </div>
-              <div className="bg-white text-gray-600 rounded-lg rounded-tl-none p-3 shadow-sm border border-gray-200">
-                <div className="flex space-x-1 items-center h-5 px-1">
+              <div className="p-3 text-gray-600 bg-white border border-gray-200 rounded-lg rounded-tl-none shadow-sm">
+                <div className="flex items-center h-5 px-1 space-x-1">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
@@ -213,9 +213,9 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
       {/* Message input form with improved styling */}
       <form
         onSubmit={sendMessage}
-        className="bg-white p-4 shadow-lg border-t border-gray-200"
+        className="p-4 bg-white border-t border-gray-200 shadow-lg"
       >
-        <div className="max-w-3xl mx-auto flex">
+        <div className="flex max-w-3xl mx-auto">
           <div className="relative flex-1">
             <input
               ref={inputRef}
@@ -228,18 +228,18 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ roomId, userId, userType,
             />
             <button
               type="button"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute text-gray-400 transform -translate-y-1/2 right-2 top-1/2 hover:text-gray-600"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
           </div>
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-r-lg transition-colors duration-300 flex items-center justify-center"
+            className="flex items-center justify-center px-6 py-3 text-white transition-colors duration-300 bg-blue-500 rounded-r-lg hover:bg-blue-600"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
             </svg>
           </button>

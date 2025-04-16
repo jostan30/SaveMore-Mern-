@@ -6,6 +6,10 @@ const cartItemSchema = new mongoose.Schema({
     name:{type:String,required:true}
 });
 const userSchema = new mongoose.Schema({
+    role:{
+        type:String,
+        default: "user",
+    },
     fullname: {
         type: String,
         minLength: 3,

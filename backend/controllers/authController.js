@@ -19,23 +19,9 @@ module.exports.registerUser = async (req, res) => {
                email,
                password: hash
             });
-            let token = generateToken(user);
-
-            //    res.cookie("token", token, {
-            //       httpOnly: true,
-            //       secure: false,      // Set this to true if using https
-            //       sameSite: 'None'    // This allows the cookie to be sent cross-origin
-            //   });
-
-            res.cookie("token", token, {
-               httpOnly: true,              // Makes the cookie inaccessible to JavaScript
-               secure: true,                // Cookie only sent over HTTPS (in production)
-               sameSite: 'None',            // Necessary for cross-origin cookies
-               domain: '.save-more-mern.vercel.app', // Domain for which the cookie is valid
-               path: '/',                   // Path for the cookie (root path in this case)
-               maxAge: 3600000              // Cookie expiration time (1 hour in milliseconds)
-            });
-            return res.json({ success: true, msg: "User Created successfully!!", token: token });
+            console.log(user);
+            
+            return res.json({ success: true, msg: "User Created successfully!!"});
          });
       });
    } catch (err) {
@@ -57,12 +43,8 @@ module.exports.registerOwner = async (req, res) => {
                email,
                password: hash
             });
-            let token = generateToken(user);
-            res.cookie("token", token, {
-               httpOnly: true,
-               secure: false,      // Set this to true if using https
-               sameSite: 'None'    // This allows the cookie to be sent cross-origin
-            });
+            console.log(user);
+           
             return res.json({ success: true, msg: "User Created successfully!!" });
          });
       });
@@ -122,7 +104,7 @@ module.exports.loginOwner = async (req, res) => {
       if (result) {
          let token = generateToken(owner);
          res.cookie("token", token);
-         return res.json({ success: true, msg: "You have registered successfully" });
+         return res.json({ success: true, msg: "You have registered successfully" ,token:token});
 
       } else {
          return res.json({ success: false, msg: "Invalid Credentials" });

@@ -25,24 +25,24 @@ if (rootElement) {
         <Route path="/" element={<App />} />
 
         {/* Retailer dashboard */}
-        <Route path="/retailers/*" element={<ProtectedRoute userType="owner"><RetailersConsole /></ProtectedRoute>} />
+        <Route path="retailers" element={<ProtectedRoute ><RetailersConsole /></ProtectedRoute>} />
 
         <Route
-         path="/chat/buyer/:productId" 
-         element={<ProtectedRoute userType="user"> <BuyerChatPage /></ProtectedRoute>} />
+          path="/chat/buyer/:productId"
+          element={<ProtectedRoute > <BuyerChatPage /></ProtectedRoute>} />
 
-<Route
-         path="/chat/seller" 
-         element={<ProtectedRoute userType="owner"> <SellerChatPage /></ProtectedRoute>} />
+        <Route
+          path="/chat/seller"
+          element={<ProtectedRoute> <SellerChatPage /></ProtectedRoute>} />
 
         <Route path="deliveryRegister">
           <Route index
             element={
-                <>
-                  <DeliveryAgentForm />
-                  <Footer />
-                </>
-              } />
+              <>
+                <DeliveryAgentForm />
+                <Footer />
+              </>
+            } />
           {/* Add nested routes here as needed */}
         </Route>
 
@@ -51,32 +51,32 @@ if (rootElement) {
         <Route path="users">
           <Route index
             element={
-              <ProtectedRoute userType="user">
+              <ProtectedRoute >
                 <Shop />
-                <Footer/>
+                <Footer />
               </ProtectedRoute>
             } />
           {/* Add nested routes here as needed */}
           <Route path="/users/cart" element={
-            <ProtectedRoute userType="user">
+            <ProtectedRoute >
               <Cart />
-              <Footer/>
+              <Footer />
             </ProtectedRoute>
           } />
           <Route path="/users/buyProducts" element={
-            <ProtectedRoute userType="user">
+            <ProtectedRoute>
               <PurchasedProducts />
-              <Footer/>
+              <Footer />
             </ProtectedRoute>
           } />
         </Route>
-       
-        
+
+
 
       </Routes>
     </BrowserRouter>
   );
-   
+
 } else {
   console.error("Root element not found. Please check your HTML file.");
 }

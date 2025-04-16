@@ -9,6 +9,40 @@ const deliveryModel=require('../models/delivery-model');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 const mongoose=require("mongoose");
+
+//For useAuth checks if the token exists in both owner and user and send the role if its found 
+router.get('/verifyToken', async(req,res) =>{
+  const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
+  
+  if (!token) {
+    return res.json({ success: false, message: "Token is missing" });
+  }
+  try {
+
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    
+    let user = null;
+    if(decoded.role === "user") {
+      user = await userModel.findOne({ _id: decoded.id }).select("-password");
+    } else if(decoded.role === "owner") {
+      user = await ownerModel.findOne({ _id: decoded.id }).select("-password");
+    }
+
+    if(user && decoded.role === "user") {
+      return res.status(200).json({success:true , data:user ,role :"user"});
+    } else if(user) {
+      return res.status(200).json({success:true , data:user , role : "retailer"});
+    } 
+
+    return res.status(401).json({success:false , message: "No user found"})
+    
+  }catch (error){
+    console.log(error);
+    return res.json({ success: false, message: "Token is invalid" });
+  }
+})  
+
+
 // Get all products from the shop
 router.get('/shop', async (req, res) => {
   try {
@@ -28,32 +62,7 @@ router.get('/shop', async (req, res) => {
   }
 });
 
-// Get products in the user's cart
-// router.get('/cart', async (req, res) => {
-//   try {
-//     const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
-//     console.log("The token in cart is",token);
-    
-//     if (!token) {
-//       return res.status(401).json({ message: "Token is missing" });
-//     }
 
-//     const decoded = jwt.verify(token, process.env.JWT_KEY);
-//     let user = await userModel.findOne({ _id: decoded.id }).populate('cart.product_id');
-    
-//     // Format cart products
-//     const formattedProducts = user.cart.map((item) => ({
-//       ...item.product_id.toObject(),
-//       quantity: item.quantity,
-//       image: item.product_id.image.toString("base64"), // Convert Buffer to Base64
-//     }));
-//     // console.log("The cart products returned from 3000 port are",formattedProducts);
-    
-//     return res.json(formattedProducts);
-//   } catch (error) {
-//     return res.status(500).json({ message: "Server error", error });
-//   }
-// });
 router.get('/cart', async (req, res) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
@@ -85,52 +94,6 @@ router.get('/cart', async (req, res) => {
 });
 
 
-
-// router.get('/fetchPurchase',async(req,res)=>{
-//   try {
-//     const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
-//     console.log("The token in buy is", token);
-    
-//     if (!token) {
-//       return res.status(401).json({ message: "Token is missing" });
-//     }
-    
-//     const decoded = jwt.verify(token, process.env.JWT_KEY);
-//     //here we have to populate all the object id again o retrieve desired fields
-//     let user = await userModel.findOne({ _id: decoded.id })
-//       .populate({
-//         path: "purchasedProducts",
-//         populate: [
-//           { path: "product", select: "name price image  ShopName " }, // Get product details
-//           { path: "owner", select: "email" } // Get owner details
-//         ],
-//       });
-//       console.log("Fetched user:", user);
-    
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     //user can access purchasedProducts.map only after populate otherwise undefined will return 
-//     const purchasedProducts=user.purchasedProducts.map((item)=>({
-//       productName: item.product?.name || "Product not found",
-//       productPrice: item.product?.price || 0,
-//       productImage: item.product?.image || "",
-//       ownerShopName: item.owner?.ShopName || "Unknown",
-//       ownerEmail: item.owner?.email || "No email",
-//       quantity: item.quantity,
-//       purchasedDate: item.purchaseDate,
-//       paymentMethod: item.paymentMethod,
-//       status: item.status,
-//     }));
-//     console.log("The purchased products in the buy are",user.purchasedProducts);
-//     return res.json(purchasedProducts);
-//   } catch (error) {
-//     console.error("Cart error:", error);
-//     return res.status(500).json({ message: "Server error", error: error.message });
-//   }
-
-  
-// })
 router.get('/fetchPurchase', async (req, res) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1]; // Extract token

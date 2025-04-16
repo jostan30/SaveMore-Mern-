@@ -1,149 +1,3 @@
-// 'use client'
-// import { useState } from "react";
-// export function PurchasedProductsView() {
-//   // Sample data - in a real app, you would fetch this from an API
-//   const orders = [
-//     {
-//       id: "ORD-1234",
-//       customer: "John Doe",
-//       date: "2025-03-28",
-//       amount: "$129.99",
-//       status: "Pending",
-//       items: [
-//         { name: "Wireless Headphones", quantity: 1, price: "$79.99" },
-//         { name: "Phone Case", quantity: 1, price: "$19.99" },
-//         { name: "USB-C Cable", quantity: 2, price: "$15.00" }
-//       ],
-//       address: "123 Main St, New York, NY 10001",
-//       phone: "(555) 123-4567",
-//       email: "john.doe@example.com"
-//     },
-//     {
-//       id: "ORD-1235",
-//       customer: "Jane Smith",
-//       date: "2025-03-29",
-//       amount: "$210.50",
-//       status: "Pending",
-//       items: [
-//         { name: "Smart Watch", quantity: 1, price: "$189.99" },
-//         { name: "Watch Band", quantity: 1, price: "$20.51" }
-//       ],
-//       address: "456 Oak Ave, Chicago, IL 60007",
-//       phone: "(555) 987-6543",
-//       email: "jane.smith@example.com"
-//     },
-//     {
-//       id: "ORD-1236",
-//       customer: "Mike Johnson",
-//       date: "2025-03-30",
-//       amount: "$85.49",
-//       status: "Pending",
-//       items: [
-//         { name: "Bluetooth Speaker", quantity: 1, price: "$85.49" }
-//       ],
-//       address: "789 Pine Dr, Miami, FL 33101",
-//       phone: "(555) 246-8135",
-//       email: "mike.j@example.com"
-//     }
-//   ];
-
-//   const [expandedOrder, setExpandedOrder] = useState(null);
-
-//   const toggleOrderDetails = (orderId:any) => {
-//     if (expandedOrder === orderId) {
-//       setExpandedOrder(null);
-//     } else {
-//       setExpandedOrder(orderId);
-//     }
-//   };
-
-//   return (
-//     <div className="p-6">
-//       <div className="mb-6">
-//         <h2 className="text-2xl font-bold text-gray-800">Purchased Products</h2>
-//         <p className="text-gray-600">Manage and fulfill customer orders</p>
-//       </div>
-
-//       <div className="bg-white rounded-lg shadow overflow-hidden">
-//         <div className="grid grid-cols-6 bg-gray-100 p-4 font-medium text-gray-700">
-//           <div>Order ID</div>
-//           <div>Customer</div>
-//           <div>Date</div>
-//           <div>Amount</div>
-//           <div>Status</div>
-//           <div className="text-right">Actions</div>
-//         </div>
-
-//         {orders.map((order) => (
-//           <div key={order.id} className="border-t border-gray-200">
-//             <div className="grid grid-cols-6 p-4 items-center hover:bg-gray-50">
-//               <div className="font-medium">{order.id}</div>
-//               <div>{order.customer}</div>
-//               <div>{order.date}</div>
-//               <div>{order.amount}</div>
-//               <div>
-//                 <span className="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
-//                   {order.status}
-//                 </span>
-//               </div>
-//               <div className="flex justify-end gap-2">
-//                 <button 
-//                   onClick={() => toggleOrderDetails(order.id)}
-//                   className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
-//                 >
-//                   {expandedOrder === order.id ? "Hide Details" : "View Details"}
-//                 </button>
-//                 <button className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200">
-//                   Process
-//                 </button>
-//               </div>
-//             </div>
-
-//             {expandedOrder === order.id && (
-//               <div className="bg-gray-50 p-4 border-t border-gray-200">
-//                 <div className="grid grid-cols-2 gap-6">
-//                   <div>
-//                     <h4 className="font-medium mb-2">Order Items</h4>
-//                     <div className="bg-white p-3 rounded border border-gray-200">
-//                       {order.items.map((item, idx) => (
-//                         <div key={idx} className="flex justify-between py-1">
-//                           <span>
-//                             {item.quantity}x {item.name}
-//                           </span>
-//                           <span>{item.price}</span>
-//                         </div>
-//                       ))}
-//                       <div className="border-t border-gray-200 mt-2 pt-2 font-medium flex justify-between">
-//                         <span>Total</span>
-//                         <span>{order.amount}</span>
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <div>
-//                     <h4 className="font-medium mb-2">Shipping Information</h4>
-//                     <div className="bg-white p-3 rounded border border-gray-200">
-//                       <p className="mb-1"><span className="font-medium">Address:</span> {order.address}</p>
-//                       <p className="mb-1"><span className="font-medium">Phone:</span> {order.phone}</p>
-//                       <p><span className="font-medium">Email:</span> {order.email}</p>
-//                     </div>
-//                     <div className="mt-4 flex gap-2">
-//                       <button className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-//                         Mark as Shipped
-//                       </button>
-//                       <button className="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-//                         Print Label
-//                       </button>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
 
 'use client'
 import React, { useState, useEffect } from "react";
@@ -219,7 +73,7 @@ export function PurchasedProductsView() {
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<PurchasedProduct | null>(null);
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
-  const { isLoggedIn,  token } = useAuth({ userType: "owner" });
+  const { isLoggedIn,  token } = useAuth();
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
 
   useEffect(() => {
@@ -340,23 +194,23 @@ export function PurchasedProductsView() {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center h-64 gap-2">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <p className="text-gray-600 font-medium">Loading your orders...</p>
-        <p className="text-gray-500 text-sm">Please wait while we fetch your latest order data</p>
+      <div className="flex flex-col items-center justify-center h-64 gap-2">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <p className="font-medium text-gray-600">Loading your orders...</p>
+        <p className="text-sm text-gray-500">Please wait while we fetch your latest order data</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-lg shadow-sm">
+      <div className="p-6 text-red-700 border border-red-200 rounded-lg shadow-sm bg-red-50">
         <div className="flex items-center">
-          <X className="h-5 w-5 mr-2" />
+          <X className="w-5 h-5 mr-2" />
           <p className="font-semibold">Error Loading Orders</p>
         </div>
         <p className="mt-2">{error}</p>
-        <Button variant="outline" className="mt-4 border-red-300 text-red-700 hover:bg-red-100">
+        <Button variant="outline" className="mt-4 text-red-700 border-red-300 hover:bg-red-100">
           Try Again
         </Button>
       </div>
@@ -368,16 +222,16 @@ export function PurchasedProductsView() {
       <div className="p-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Order Management</h2>
-          <p className="text-gray-600 mt-2">Track and manage your product orders in one place</p>
+          <p className="mt-2 text-gray-600">Track and manage your product orders in one place</p>
         </div>
-        <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-12 text-center shadow-sm">
-          <div className="bg-white p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center shadow-sm">
-            <Package className="h-10 w-10 text-primary" />
+        <div className="p-12 text-center border border-gray-200 shadow-sm bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
+          <div className="flex items-center justify-center w-20 h-20 p-4 mx-auto bg-white rounded-full shadow-sm">
+            <Package className="w-10 h-10 text-primary" />
           </div>
           <h3 className="mt-6 text-xl font-semibold text-gray-900">No Orders Yet</h3>
-          <p className="mt-3 text-gray-600 max-w-md mx-auto">Your order history will appear here once customers start purchasing your products.</p>
+          <p className="max-w-md mx-auto mt-3 text-gray-600">Your order history will appear here once customers start purchasing your products.</p>
           <Button className="mt-6">
-            <Gift className="h-4 w-4 mr-2" />
+            <Gift className="w-4 h-4 mr-2" />
             Create Special Offer
           </Button>
         </div>
@@ -386,19 +240,19 @@ export function PurchasedProductsView() {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="p-8 mx-auto max-w-7xl">
       <div className="mb-8">
-        <div className="flex justify-between items-end">
+        <div className="flex items-end justify-between">
           <div>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Order Management</h2>
-            <p className="text-gray-600 mt-2">Track and manage your product orders efficiently</p>
+            <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-primary to-primary/70 bg-clip-text">Order Management</h2>
+            <p className="mt-2 text-gray-600">Track and manage your product orders efficiently</p>
           </div>
           <div className="flex gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="gap-2">
                   {filterStatus ? `Filter: ${filterStatus}` : "Filter Orders"}
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -408,15 +262,15 @@ export function PurchasedProductsView() {
                   All Orders
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterStatus("Pending")}>
-                  <Clock className="h-4 w-4 mr-2 text-amber-500" />
+                  <Clock className="w-4 h-4 mr-2 text-amber-500" />
                   Pending
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterStatus("Shipped")}>
-                  <Truck className="h-4 w-4 mr-2 text-blue-500" />
+                  <Truck className="w-4 h-4 mr-2 text-blue-500" />
                   Shipped
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setFilterStatus("Delivered")}>
-                  <Check className="h-4 w-4 mr-2 text-emerald-500" />
+                  <Check className="w-4 h-4 mr-2 text-emerald-500" />
                   Delivered
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -429,54 +283,54 @@ export function PurchasedProductsView() {
         
         <div className="grid grid-cols-4 gap-4 mt-6">
           <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
-            <CardContent className="p-4 flex justify-between items-center">
+            <CardContent className="flex items-center justify-between p-4">
               <div>
-                <p className="text-amber-700 font-medium">Pending</p>
+                <p className="font-medium text-amber-700">Pending</p>
                 <p className="text-2xl font-bold">{purchasedProducts.filter(p => p.status === "Pending").length}</p>
               </div>
-              <Clock className="h-10 w-10 text-amber-500" />
+              <Clock className="w-10 h-10 text-amber-500" />
             </CardContent>
           </Card>
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-            <CardContent className="p-4 flex justify-between items-center">
+          <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100">
+            <CardContent className="flex items-center justify-between p-4">
               <div>
-                <p className="text-blue-700 font-medium">Shipped</p>
+                <p className="font-medium text-blue-700">Shipped</p>
                 <p className="text-2xl font-bold">{purchasedProducts.filter(p => p.status === "Shipped").length}</p>
               </div>
-              <Truck className="h-10 w-10 text-blue-500" />
+              <Truck className="w-10 h-10 text-blue-500" />
             </CardContent>
           </Card>
           <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
-            <CardContent className="p-4 flex justify-between items-center">
+            <CardContent className="flex items-center justify-between p-4">
               <div>
-                <p className="text-emerald-700 font-medium">Delivered</p>
+                <p className="font-medium text-emerald-700">Delivered</p>
                 <p className="text-2xl font-bold">{purchasedProducts.filter(p => p.status === "Delivered").length}</p>
               </div>
-              <Check className="h-10 w-10 text-emerald-500" />
+              <Check className="w-10 h-10 text-emerald-500" />
             </CardContent>
           </Card>
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-            <CardContent className="p-4 flex justify-between items-center">
+          <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100">
+            <CardContent className="flex items-center justify-between p-4">
               <div>
-                <p className="text-purple-700 font-medium">Total</p>
+                <p className="font-medium text-purple-700">Total</p>
                 <p className="text-2xl font-bold">{purchasedProducts.length}</p>
               </div>
-              <ShoppingBag className="h-10 w-10 text-purple-500" />
+              <ShoppingBag className="w-10 h-10 text-purple-500" />
             </CardContent>
           </Card>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product, index) => (
-          <Card key={index} className="overflow-hidden hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-white relative">
+          <Card key={index} className="relative overflow-hidden transition-all duration-300 bg-white border-0 shadow-md hover:shadow-lg">
             {/* Status Banner Ribbon */}
             <div className={`absolute top-4 right-4 z-10`}>
               {renderStatusBadge(product.status)}
             </div>
             
             {product.productImage && (
-              <div className="h-48 w-full overflow-hidden bg-gray-100 relative">
+              <div className="relative w-full h-48 overflow-hidden bg-gray-100">
                 <img 
                   src={`data:image/jpeg;base64,${product.productImage}`} 
                   alt={product.productName}
@@ -494,7 +348,7 @@ export function PurchasedProductsView() {
             </CardHeader>
             
             <CardContent className="pb-0">
-              <div className="grid grid-cols-2 gap-y-3 text-sm">
+              <div className="grid grid-cols-2 text-sm gap-y-3">
                 <div className="flex items-center text-gray-500">
                   <CreditCard className="h-3.5 w-3.5 mr-2" />
                   Payment
@@ -514,35 +368,35 @@ export function PurchasedProductsView() {
                 <div className="font-medium line-clamp-1">{product.buyerName}</div>
                 
                 <div className="col-span-2 mt-2">
-                  <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
                     <div>
-                      <p className="text-gray-500 text-xs">Total Amount</p>
+                      <p className="text-xs text-gray-500">Total Amount</p>
                       <p className="text-lg font-bold">${(product.productPrice * product.quantity).toFixed(2)}</p>
                     </div>
-                    <ShieldCheck className="h-8 w-8 text-primary/40" />
+                    <ShieldCheck className="w-8 h-8 text-primary/40" />
                   </div>
                 </div>
               </div>
             </CardContent>
             
-            <CardFooter className="pt-4 pb-5 flex gap-2">
+            <CardFooter className="flex gap-2 pt-4 pb-5">
               {product.status === "Pending" && (
                 <Button 
                   variant="default" 
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 gap-1"
+                  className="flex-1 gap-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
                   onClick={() => handleUpdateStatus(product._id, "Shipped")}
                 >
-                  <Truck className="h-4 w-4" />
+                  <Truck className="w-4 h-4" />
                   Ship Now
                 </Button>
               )}
               {product.status === "Shipped" && (
                 <Button 
                   variant="default" 
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 gap-1"
+                  className="flex-1 gap-1 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600"
                   onClick={() => handleUpdateStatus(product._id, "Delivered")}
                 >
-                  <Check className="h-4 w-4" />
+                  <Check className="w-4 h-4" />
                   Mark Delivered
                 </Button>
               )}
@@ -552,13 +406,13 @@ export function PurchasedProductsView() {
                   <TooltipTrigger asChild>
                     <Button 
                       variant="outline" 
-                      className="border-gray-300 text-gray-700 hover:bg-gray-100 gap-1"
+                      className="gap-1 text-gray-700 border-gray-300 hover:bg-gray-100"
                       onClick={() => {
                         setSelectedOrder(product);
                         setDetailsOpen(true);
                       }}
                     >
-                      <Info className="h-4 w-4" />
+                      <Info className="w-4 h-4" />
                       <span className="hidden sm:inline">Details</span>
                     </Button>
                   </TooltipTrigger>
@@ -571,7 +425,7 @@ export function PurchasedProductsView() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
-                    <MoreHorizontal className="h-4 w-4" />
+                    <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -595,28 +449,28 @@ export function PurchasedProductsView() {
           <DialogContent className="sm:max-w-lg">
             <DialogHeader className="pb-4 border-b border-gray-100">
               <DialogTitle className="flex items-center text-2xl">
-                <ShoppingBag className="h-6 w-6 mr-2 text-primary" />
+                <ShoppingBag className="w-6 h-6 mr-2 text-primary" />
                 Order Details
               </DialogTitle>
-              <DialogDescription className="text-gray-500 pt-1">
+              <DialogDescription className="pt-1 text-gray-500">
                 Order placed on {formatDate(selectedOrder.purchasedDate)}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-6 py-2">
+            <div className="py-2 space-y-6">
               {/* Status Banner */}
-              <div className="flex justify-between items-center p-3 rounded-lg bg-gray-50">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
                 <h3 className="font-medium">Current Status</h3>
                 <div className="flex items-center gap-2">
                   {renderStatusBadge(selectedOrder.status)}
-                  <ArrowRight className="h-4 w-4 text-gray-400" />
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
                 </div>
               </div>
 
               {/* Product Information */}
               <div className="flex gap-5">
                 {selectedOrder.productImage && (
-                  <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 shadow-sm">
+                  <div className="flex-shrink-0 w-24 h-24 overflow-hidden bg-gray-100 rounded-lg shadow-sm">
                     <img 
                       src={`data:image/jpeg;base64,${selectedOrder.productImage}`} 
                       alt={selectedOrder.productName}
@@ -625,11 +479,11 @@ export function PurchasedProductsView() {
                   </div>
                 )}
                 <div className="flex-1">
-                  <h4 className="font-bold text-lg">{selectedOrder.productName}</h4>
-                  <div className="text-gray-600 mt-1">
+                  <h4 className="text-lg font-bold">{selectedOrder.productName}</h4>
+                  <div className="mt-1 text-gray-600">
                     ${selectedOrder.productPrice.toFixed(2)} × {selectedOrder.quantity}
                   </div>
-                  <div className="mt-2 font-semibold text-lg text-primary">
+                  <div className="mt-2 text-lg font-semibold text-primary">
                     ${(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}
                   </div>
                 </div>
@@ -639,27 +493,27 @@ export function PurchasedProductsView() {
               
               {/* Customer Information */}
               <div>
-                <h3 className="font-semibold mb-3 text-gray-800">Customer Information</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <h3 className="mb-3 font-semibold text-gray-800">Customer Information</h3>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="p-3 rounded-lg bg-gray-50">
                     <div className="flex items-center text-sm font-medium text-gray-700">
-                      <User className="h-4 w-4 mr-2 text-primary" />
+                      <User className="w-4 h-4 mr-2 text-primary" />
                       Customer Name
                     </div>
                     <div className="mt-1 text-gray-900">{selectedOrder.buyerName}</div>
                   </div>
                   <div className="p-3 rounded-lg bg-gray-50">
                     <div className="flex items-center text-sm font-medium text-gray-700">
-                      <Mail className="h-4 w-4 mr-2 text-primary" />
+                      <Mail className="w-4 h-4 mr-2 text-primary" />
                       Email Address
                     </div>
                     <div className="mt-1 text-gray-900">{selectedOrder.buyerEmail}</div>
                   </div>
                 </div>
                 {selectedOrder.address && (
-                  <div className="p-3 rounded-lg bg-gray-50 mt-4">
+                  <div className="p-3 mt-4 rounded-lg bg-gray-50">
                     <div className="flex items-center text-sm font-medium text-gray-700">
-                      <MapPin className="h-4 w-4 mr-2 text-primary" />
+                      <MapPin className="w-4 h-4 mr-2 text-primary" />
                       Shipping Address
                     </div>
                     <div className="mt-1 text-gray-900">{selectedOrder.address}</div>
@@ -671,9 +525,9 @@ export function PurchasedProductsView() {
               
               {/* Payment Information */}
               <div>
-                <h3 className="font-semibold mb-3 text-gray-800">Payment Summary</h3>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="grid grid-cols-2 gap-y-3 text-sm">
+                <h3 className="mb-3 font-semibold text-gray-800">Payment Summary</h3>
+                <div className="p-4 rounded-lg bg-gray-50">
+                  <div className="grid grid-cols-2 text-sm gap-y-3">
                     <div className="text-gray-600">Payment Method:</div>
                     <div className="font-medium text-gray-900">{selectedOrder.paymentMethod}</div>
                     
@@ -686,14 +540,14 @@ export function PurchasedProductsView() {
                     <div className="text-gray-600">Tax:</div>
                     <div className="font-medium text-gray-900">$0.00</div>
                     
-                    <div className="text-gray-800 font-semibold pt-2 border-t border-gray-200 mt-2">Total:</div>
-                    <div className="font-bold text-lg text-primary pt-2 border-t border-gray-200 mt-2">${(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}</div>
+                    <div className="pt-2 mt-2 font-semibold text-gray-800 border-t border-gray-200">Total:</div>
+                    <div className="pt-2 mt-2 text-lg font-bold border-t border-gray-200 text-primary">${(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <DialogFooter className="flex justify-between items-center sm:justify-between pt-4 border-t border-gray-100">
+            <DialogFooter className="flex items-center justify-between pt-4 border-t border-gray-100 sm:justify-between">
               {selectedOrder.status === "Pending" && (
                 <Button 
                   onClick={() => {
@@ -702,7 +556,7 @@ export function PurchasedProductsView() {
                   }}
                   className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
                 >
-                  <Truck className="h-4 w-4 mr-2" />
+                  <Truck className="w-4 h-4 mr-2" />
                   Ship This Order
                 </Button>
               )}
@@ -714,7 +568,7 @@ export function PurchasedProductsView() {
                   }}
                   className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600"
                 >
-                  <Check className="h-4 w-4 mr-2" />
+                  <Check className="w-4 h-4 mr-2" />
                   Mark as Delivered
                 </Button>
               )}
