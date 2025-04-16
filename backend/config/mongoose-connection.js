@@ -1,15 +1,14 @@
-const mongoose=require('mongoose');
-const dbgr=require('debug')('development:mongoose');
-const config=require('config');
+const mongoose = require('mongoose');
+const dbgr = require('debug')('development:mongoose');
+require('dotenv').config(); // Load .env variables
 
 mongoose
-.connect(`${config.get("MONGODB_URI")}`)
-.then(function(){
-    dbgr("connected");           //$env:DEBUG="development:*"    ---->to set environemnt
-                                 //Remove-Item Env:DEBUG
-})
-.catch(function(err){
-    console.log("err",err);
-})
+  .connect(process.env.MONGODB_URI)
+  .then(function () {
+    dbgr("Connected to MongoDB");           
+  })
+  .catch(function (err) {
+    console.log("Connection error:", err);
+  });
 
-module.exports=mongoose.connection;
+module.exports = mongoose.connection;
