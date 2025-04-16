@@ -30,8 +30,8 @@ export function LoginForm({ isRetailer }: LoginFormProps) {
       password: target.password.value,
     };
 
-    const api = isRetailer ? "owners" : "users";
-    const apiUrl = `http://localhost:3000/${api}/login`;
+    // const api = isRetailer ? "owners" : "users";
+    const apiUrl = `http://localhost:3000/users/login`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -44,8 +44,9 @@ export function LoginForm({ isRetailer }: LoginFormProps) {
       });
 
       const result = await response.json();
-      
+      console.log(result);
       if (response.ok && result.success) {
+        localStorage.setItem("token", result.token.toString());
         toast({
           title: "Login successful!",
           description: `${
@@ -124,23 +125,23 @@ export function LoginForm({ isRetailer }: LoginFormProps) {
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               required
-              className="h-11 pr-10"
+              className="pr-10 h-11"
             />
             <button
               type="button"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              className="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeOffIcon className="h-5 w-5" />
+                <EyeOffIcon className="w-5 h-5" />
               ) : (
-                <EyeIcon className="h-5 w-5" />
+                <EyeIcon className="w-5 h-5" />
               )}
             </button>
           </div>
         </div>
 
-        <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700">
+        <Button type="submit" className="w-full bg-blue-600 h-11 hover:bg-blue-700">
           Sign In
         </Button>
       </form>

@@ -30,11 +30,8 @@ const useAuth = ({ userType }: { userType: string }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("token="))
-          ?.split("=")[1];
-
+        const token = localStorage.getItem("token");
+        console.log("No token found at useAuth")
         if (!token) {
           throw new Error("Token is missing");
         }
