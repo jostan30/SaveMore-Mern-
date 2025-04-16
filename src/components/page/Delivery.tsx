@@ -22,8 +22,7 @@ interface DeliveryAgent {
   address: string;
   owner: string;
 }
-
-export default function DeliveryAgentForm() {
+const  DeliveryAgentForm =() =>{
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agents, setAgents] = useState<DeliveryAgent[]>([]);
@@ -137,10 +136,10 @@ export default function DeliveryAgentForm() {
   };
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container py-8 mx-auto">
       <div className="max-w-md mx-auto">
         <Card className="shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+          <CardHeader className="text-white bg-gradient-to-r from-blue-500 to-purple-500">
             <CardTitle className="text-xl font-bold">Add Delivery Agent</CardTitle>
             <CardDescription className="text-gray-100">
               Enter the details to register a new delivery agent
@@ -149,7 +148,7 @@ export default function DeliveryAgentForm() {
           
           <CardContent className="pt-6">
             {error && (
-              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+              <div className="p-3 mb-4 text-red-700 bg-red-100 rounded-md">
                 {error}
               </div>
             )}
@@ -157,8 +156,8 @@ export default function DeliveryAgentForm() {
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="font-medium flex items-center">
-                    <User className="mr-2 h-4 w-4" />
+                  <Label htmlFor="name" className="flex items-center font-medium">
+                    <User className="w-4 h-4 mr-2" />
                     Full Name
                   </Label>
                   <Input
@@ -173,8 +172,8 @@ export default function DeliveryAgentForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="contact" className="font-medium flex items-center">
-                    <Phone className="mr-2 h-4 w-4" />
+                  <Label htmlFor="contact" className="flex items-center font-medium">
+                    <Phone className="w-4 h-4 mr-2" />
                     Phone Number
                   </Label>
                   <Input
@@ -190,8 +189,8 @@ export default function DeliveryAgentForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="font-medium flex items-center">
-                    <MapPin className="mr-2 h-4 w-4" />
+                  <Label htmlFor="address" className="flex items-center font-medium">
+                    <MapPin className="w-4 h-4 mr-2" />
                     Address
                   </Label>
                   <Textarea
@@ -206,8 +205,8 @@ export default function DeliveryAgentForm() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="owner" className="font-medium flex items-center">
-                    <User className="mr-2 h-4 w-4" />
+                  <Label htmlFor="owner" className="flex items-center font-medium">
+                    <User className="w-4 h-4 mr-2" />
                     Select Your Distributor
                   </Label>
                   <select 
@@ -231,7 +230,7 @@ export default function DeliveryAgentForm() {
                     ))}
                   </select>
                   {owners.length === 0 && !isLoading && !error && (
-                    <p className="text-sm text-amber-600 mt-1">
+                    <p className="mt-1 text-sm text-amber-600">
                       No distributors found. Please add distributors first.
                     </p>
                   )}
@@ -257,3 +256,6 @@ export default function DeliveryAgentForm() {
     </div>
   );
 }
+
+
+export default DeliveryAgentForm;

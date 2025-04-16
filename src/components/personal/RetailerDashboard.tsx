@@ -1,4 +1,4 @@
-import { Loader } from "lucide-react";
+
 import ProductCard from "./ProductCard";
 
 interface Product {
@@ -17,14 +17,13 @@ interface Product {
 
 interface RetailerDashboardProps {
   products: Product[]; // Expecting products to be passed as a prop
-  loading: boolean
 }
 
-const RetailerDashboard = ({ products, loading }: RetailerDashboardProps) => {
+const RetailerDashboard = ({ products }: RetailerDashboardProps) => {
   return (
     <div className="flex flex-col h-full">
       {
-        !loading ? (
+      
           <div className="flex-1 min-h-0 pb-8 overflow-y-auto">
             {products.length !== 0 ? (
               <div className="h-full p-4 rounded-lg">
@@ -42,11 +41,7 @@ const RetailerDashboard = ({ products, loading }: RetailerDashboardProps) => {
             )}
           </div>
 
-        ) : (
-          <div className="flex items-center justify-center h-screen">
-            <Loader />
-          </div>
-        )
+       
       }
 
     </div>

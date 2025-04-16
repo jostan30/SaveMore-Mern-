@@ -10,8 +10,8 @@ import Cart from "./components/page/Cart.tsx";
 import Footer from "./components/personal/Footer.tsx";
 import PurchasedProducts from "./components/page/PurchasedProducts.tsx"
 import BuyerChatPage from "./components/page/BuyerChatPage.tsx";
-import DeliveryAgentForm from "./components/page/Delivery.tsx";
 import SellerChatPage from "./components/page/SellerChatPage.tsx";
+import DeliveryAgentForm from "./components/page/Delivery.tsx";
 
 const rootElement = document.getElementById("root");
 
@@ -38,8 +38,10 @@ if (rootElement) {
         <Route path="deliveryRegister">
           <Route index
             element={
-                <DeliveryAgentForm />
-                <Footer/>
+                <>
+                  <DeliveryAgentForm />
+                  <Footer />
+                </>
               } />
           {/* Add nested routes here as needed */}
         </Route>

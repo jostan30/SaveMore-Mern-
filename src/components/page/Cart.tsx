@@ -478,7 +478,6 @@ import { Toaster } from "../ui/toaster";
 import { useNavigate } from "react-router";
 
 import { useFetchCartProducts } from "@/api/cartProducts-api";
-import Footer from "../personal/Footer";
 import {
   Dialog,
   DialogContent,
@@ -1031,7 +1030,6 @@ function Cart() {
 
       }
       </div>
-      <Footer />
       </div>
    
       )

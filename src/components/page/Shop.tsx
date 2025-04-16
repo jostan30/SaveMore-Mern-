@@ -316,6 +316,7 @@ export const Logo = () => {
   return (
     <Link
       to="/users"
+
       className="relative z-20 flex items-center py-1 space-x-2 text-xl font-normal text-black dark:text-white"
     >
       <div className="flex-shrink-0 h-6 bg-green-600 rounded-tl-lg rounded-tr-sm rounded-bl-sm rounded-br-lg w-7 dark:bg-green-500" />
@@ -323,7 +324,7 @@ export const Logo = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre"
-        >
+      >
         SaveMore
       </motion.span>
     </Link>
@@ -336,6 +337,7 @@ export const LogoIcon = () => {
       to="/users"
       className="relative z-20 flex items-center py-1 space-x-2 text-sm font-normal text-black"
     >
+
       <div className="flex-shrink-0 h-6 bg-green-600 rounded-tl-lg rounded-tr-sm rounded-bl-sm rounded-br-lg w-7 dark:bg-green-500" />
     </Link>
   );
@@ -344,7 +346,7 @@ export const LogoIcon = () => {
 function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cartProduct, setCartProduct] = useState<Product[]>([]);
-  const [loading ,setLoading] = useState (false);
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { fetchCartProducts, isAuthLoading, isLoggedIn } = useFetchCartProducts();
@@ -378,7 +380,6 @@ function Shop() {
       const response = await fetchProducts();
       console.log("The products loaded are", response);
       setProducts(response || []); // Ensure it's always an array
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
@@ -387,7 +388,6 @@ function Shop() {
 
   // Fetch products on mount
   useEffect(() => {
-    setLoading(true)
     loadProducts();
   }, []);
   
@@ -634,7 +634,6 @@ function Shop() {
           {/* Display the products */}
           
         </main>
->>>>>>> 89cc728bdf2a142fb55794ed9e4680563abc47d5
       </div>
     </div>
   );
