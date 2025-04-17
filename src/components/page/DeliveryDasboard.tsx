@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Phone, Package, User, ShoppingBag, Truck, CheckCircle, Clock, AlertCircle, Info, Calendar, DollarSign } from "lucide-react";
+import { MapPin, Phone, Package, User,  Truck, CheckCircle,  AlertCircle, Info, Calendar, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 
