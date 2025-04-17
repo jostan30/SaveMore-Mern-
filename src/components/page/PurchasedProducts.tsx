@@ -133,6 +133,9 @@ interface PurchasedProduct {
 }
 
 function PurchasedProducts() {
+ 
+  
+  
   const { fetchPurchasedProducts, isAuthLoading, isLoggedIn } = useFetchPurchasedProducts();
   const [purchasedProducts, setPurchasedProducts] = useState<PurchasedProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<PurchasedProduct | null>(null);
@@ -144,7 +147,7 @@ function PurchasedProducts() {
       loadPurchasedProducts();
     }
   }, [isAuthLoading, isLoggedIn]);
-
+ 
   const loadPurchasedProducts = async () => {
     try {
       const response = await fetchPurchasedProducts();

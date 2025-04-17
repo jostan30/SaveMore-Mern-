@@ -11,6 +11,7 @@ import PurchasedProducts from "./components/page/PurchasedProducts.tsx"
 import BuyerChatPage from "./components/page/BuyerChatPage.tsx";
 import DeliveryAgentForm from "./components/page/Delivery.tsx";
 import SellerChatPage from "./components/page/SellerChatPage.tsx";
+import DeliveryDashboard from "./components/page/DeliveryDasboard.tsx";
 const rootElement = document.getElementById("root");
 
 if (rootElement) {
@@ -39,10 +40,21 @@ if (rootElement) {
              
                 <DeliveryAgentForm />
               } />
+
+
           {/* Add nested routes here as needed */}
         </Route>
+        <Route path="/DeliveryDashboard">
+          <Route index
+            element={
+             
+                <DeliveryDashboard />
+              } />
 
 
+          {/* Add nested routes here as needed */}
+        </Route>
+        
         {/* User's dashboard */}
         <Route path="users">
           <Route index

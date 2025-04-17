@@ -9,6 +9,7 @@ const deliveryModel=require('../models/delivery-model');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 const mongoose=require("mongoose");
+
 // Get all products from the shop
 router.get('/shop', async (req, res) => {
   try {
@@ -76,6 +77,7 @@ router.get('/cart', async (req, res) => {
       quantity: item.quantity,
       image: item.product_id.image.toString("base64"), // Convert Buffer to Base64
     }));
+    console.log("The formatted products are",formattedProducts);
     
     return res.json(formattedProducts);
   } catch (error) {
@@ -325,7 +327,6 @@ router.get('/delete/:itemId', async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 });
-module.exports = router;
 
 router.post("/deliveryRegister",async(req,res)=>{
   try {
@@ -350,5 +351,123 @@ router.post("/deliveryRegister",async(req,res)=>{
     return res.json({success:false, msg: "Server side error" });
   }
 })
+
+router.post("/fetchDeliveryAgents", async (req, res) => {
+  try {
+    const { userData } = req.body; // Fixed from request.json() to req.body
+    
+    // Find delivery agents owned by this user with status "available"
+    const deliveryAgents = await deliveryModel.find({
+      owner: userData,
+      status: "available"
+    });
+    
+    if (!deliveryAgents || deliveryAgents.length === 0) {
+      return res.status(404).json({ message: "No available delivery agents found" });
+    }
+    
+    return res.status(200).json({ deliveryAgents });
+    
+  } catch (error) {
+    console.log("The error is", error);
+    return res.status(500).json({ message: "Failed to fetch delivery agents", error: error.message });
+  }
+});
+
+
+// Controller function to assign a delivery agent to an order
+router.post('/assignDeliveryAgent',async (req, res) => {
+  console.log("It is hitting the api");
+  
+  try {
+    console.log("It is in te try block");
+    
+    const { orderId, deliveryAgentId } = req.body;
+    console.log("Order id is",orderId);
+    
+    // Validate inputs
+    if (!orderId || !deliveryAgentId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Order ID and Delivery Agent ID are required" 
+      });
+    }
+
+    // Check if the order exists
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Order not found" 
+      });
+    }
+
+    // Check if the delivery agent exists
+    const deliveryAgent = await deliveryModel.findById(deliveryAgentId);
+    if (!deliveryAgent) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Delivery agent not found" 
+      });
+    }
+
+    
+    // Check if the delivery agent is available
+    if (deliveryAgent.status !== "available") {
+      return res.status(400).json({ 
+        success: false, 
+        message: "This delivery agent is not available at the moment" 
+      });
+    }
+
+    // Update the order with the delivery agent reference
+    order.deliveryAgent = deliveryAgentId;
+    order.status = "Shipped"; // Optionally update the order status
+    await order.save();
+
+    // Update the delivery agent's status and assigned orders
+    deliveryAgent.status = "occupied";
+    deliveryAgent.assignedOrders.push(orderId);
+    await deliveryAgent.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Delivery agent assigned successfully",
+      data: {
+        order: order._id,
+        deliveryAgent: deliveryAgent.name,
+        status: order.status
+      }
+    });
+
+  } catch (error) {
+    console.error("Error assigning delivery agent:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while assigning delivery agent",
+      error: error.message
+    });
+  }
+});
+// router.get('/chatSeller',isLoggedInOwner,async(req,res)=>{
+//   let ownerId=await ownerModel.findOne({_id:req.owner._id});
+//   let ownerid=ownerId._id;
+//   console.log(`Owner id is ${ownerid}`);
+//   res.render('chatSeller',{ownerid});
+// })
+// router.get('/chatBuyer/:productId',isLoggedIn,async(req,res)=>{
+//  let product=await productModel.findOne({_id:req.params.productId});
+// //  console.log(`product  is ${product.owner}`);
+// productid=product._id;
+//  let ownerid=product.owner;
+//  let userId=await userModel.findOne({_id:req.user._id});
+//  let userid=userId._id;
+//  res.render('chatBuyer',{userid,productid,ownerid});
+// //  console.log(`Usser id is ${userid}`);
+
+// })
+module.exports = router;
+
+
 
 

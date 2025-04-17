@@ -151,6 +151,9 @@ import axios from "axios";
 import { Button } from "../ui/button";
 import useAuth from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "../ui/card";
+import { Avatar } from "../ui/avatar";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
 import { 
   Loader2, 
   Package, 
@@ -169,7 +172,8 @@ import {
   ArrowRight,
   ShieldCheck,
   MoreHorizontal,
-  Gift
+  Gift,
+  Phone
 } from "lucide-react";
 import {
   Dialog,
@@ -181,6 +185,7 @@ import {
 } from "../ui/dialog";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -212,7 +217,11 @@ interface StatusConfig {
   bgColor: string;
   borderColor: string;
 }
-
+type Agent = {
+  _id: string;
+  name: string;
+  contact: string;
+};
 export function PurchasedProductsView() {
   const [purchasedProducts, setPurchasedProducts] = useState<PurchasedProduct[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -221,7 +230,14 @@ export function PurchasedProductsView() {
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
   const { isLoggedIn,  token } = useAuth({ userType: "owner" });
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
-
+  const [deliveryAgents, setDeliveryAgents] = useState([]);
+  const [loadingAgents, setLoadingAgents] = useState(false);
+  const [deliveryAgentModal, setDeliveryAgentModal] = useState<boolean>(false);
+  const [selectedOrderForDelivery, setSelectedOrderForDelivery] = useState<string | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<string>(" ") ;
+  const {userData} =useAuth({userType:'owner'});
+  console.log("The data is purchased products is",userData);
+  
   useEffect(() => {
     async function fetchPurchasedProducts() {
       if (!isLoggedIn || !token) {
@@ -276,7 +292,7 @@ export function PurchasedProductsView() {
       icon: <X className="w-4 h-4 mr-1" />
     }
   };
-
+ 
   // Function to render status badge with proper TypeScript typing
   const renderStatusBadge = (status: string) => {
     const config = statusConfig[status] || {
@@ -293,7 +309,69 @@ export function PurchasedProductsView() {
       </Badge>
     );
   };
+   
+   const fetchDeliveryAgents = async (orderId:any) => {
+    if (!userData?._id || !token) return;
+    
+    try {
+      setLoadingAgents(true);
+      setDeliveryAgentModal(true);
+      setSelectedOrderForDelivery(orderId);
+      
+      const response = await axios.post(
+        'http://localhost:3000/fetchDeliveryAgents',
+        { userData: userData?._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      if (response.data && response.data.deliveryAgents) {
+        setDeliveryAgents(response.data.deliveryAgents);
+      }
+    } catch (error) {
+      console.log("Error fetching delivery agents:", error);
+    } finally {
+      setLoadingAgents(false);
+    }
+  };
+  const assignDeliveryAgent = async () => {
+    if (!selectedAgent || !selectedOrderForDelivery) return;
+    console.log("The selected agent is",selectedAgent);
+    console.log("The selectedOrderForDelivery is",selectedOrderForDelivery);
+    
+    
+    try {
+      // Assign the delivery agent to the order
+console.log("The api is trying to be hit");
 
+      await axios.post(
+        `http://localhost:3000/assignDeliveryAgent`,
+        { 
+          orderId: selectedOrderForDelivery,
+          deliveryAgentId: selectedAgent 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      // Update order status to "Shipped"
+      await handleUpdateStatus(selectedOrderForDelivery, "Shipped");
+      
+      // Close modal and reset states
+      setDeliveryAgentModal(false);
+      setSelectedAgent("");
+      setSelectedOrderForDelivery(null);
+      
+    } catch (error) {
+      console.error("Error assigning delivery agent:", error);
+    }
+  };
   const handleUpdateStatus = async (orderId: string | undefined, newStatus: string) => {
     if (!orderId || !token) return;
     
@@ -526,16 +604,30 @@ export function PurchasedProductsView() {
             </CardContent>
             
             <CardFooter className="pt-4 pb-5 flex gap-2">
-              {product.status === "Pending" && (
-                <Button 
-                  variant="default" 
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 gap-1"
-                  onClick={() => handleUpdateStatus(product._id, "Shipped")}
-                >
-                  <Truck className="h-4 w-4" />
-                  Ship Now
-                </Button>
-              )}
+            {product.status === "Pending" && (
+  <Button 
+    variant="default" 
+    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 gap-1"
+    onClick={() => fetchDeliveryAgents(product._id)}
+  >
+    <Truck className="h-4 w-4" />
+    Ship Now
+  </Button>
+)}
+
+{/* And also update the Ship This Order button in the details dialog */}
+{/* {selectedOrder?.status === "Pending" && (
+  <Button 
+    onClick={() => {
+      setDetailsOpen(false);
+      fetchDeliveryAgents(selectedOrder._id);
+    }}
+    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
+  >
+    <Truck className="h-4 w-4 mr-2" />
+    Ship This Order
+  </Button>
+)} */}
               {product.status === "Shipped" && (
                 <Button 
                   variant="default" 
@@ -725,6 +817,95 @@ export function PurchasedProductsView() {
           </DialogContent>
         )}
       </Dialog>
+
+      <Dialog open={deliveryAgentModal} onOpenChange={setDeliveryAgentModal}>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle className="flex items-center">
+        <Truck className="h-5 w-5 mr-2 text-primary" />
+        Select Delivery Agent
+      </DialogTitle>
+      <DialogDescription>
+        Choose an available delivery agent to handle this shipment
+      </DialogDescription>
+    </DialogHeader>
+
+    {loadingAgents ? (
+      <div className="py-12 flex flex-col items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-gray-500">Loading available delivery agents...</p>
+      </div>
+    ) : deliveryAgents.length === 0 ? (
+      <div className="py-8 text-center">
+        <div className="bg-amber-50 border border-amber-200 text-amber-700 p-4 rounded-lg mb-4">
+          <div className="flex items-center">
+            <Info className="h-5 w-5 mr-2" />
+            <p className="font-medium">No available delivery agents</p>
+          </div>
+          <p className="mt-1 text-sm">All your delivery agents are currently occupied or inactive.</p>
+        </div>
+        <Button variant="outline" onClick={() => setDeliveryAgentModal(false)}>
+          Close
+        </Button>
+      </div>
+    ) : (
+      <>
+        <div className="py-4">
+          <RadioGroup value={selectedAgent} onValueChange={setSelectedAgent}>
+            <div className="space-y-3 max-h-[320px] overflow-y-auto pr-2">
+              {deliveryAgents.map((agent:Agent) => (
+                <div
+                  key={agent._id}
+                  className={`flex items-center space-x-3 border rounded-lg p-3 transition-all cursor-pointer ${
+                    selectedAgent === agent._id
+                      ? "border-primary bg-primary/5"
+                      : "border-gray-200 hover:border-primary/50"
+                  }`}
+                  onClick={() => setSelectedAgent(agent._id)}
+                >
+                  <RadioGroupItem value={agent._id} id={agent._id} />
+                  <Label htmlFor={agent._id} className="flex-1 cursor-pointer">
+                    <div className="flex items-center">
+                      <Avatar className="h-10 w-10 bg-primary/20 text-primary font-medium">
+                        {agent.name.substring(0, 2).toUpperCase()}
+                      </Avatar>
+                      <div className="ml-3">
+                        <div className="font-medium">{agent.name}</div>
+                        <div className="text-sm text-gray-500 flex items-center gap-2">
+                          <span className="flex items-center">
+                            <Phone className="h-3 w-3 mr-1" />
+                            {agent.contact}
+                          </span>
+                          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 text-xs">
+                            Available
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </RadioGroup>
+        </div>
+
+        <DialogFooter className="sm:justify-between border-t pt-4">
+          <Button
+            disabled={!selectedAgent}
+            onClick={assignDeliveryAgent}
+            className="bg-gradient-to-r from-primary to-primary/80"
+          >
+            <Truck className="h-4 w-4 mr-2" />
+            Assign & Ship
+          </Button>
+          <Button variant="outline" onClick={() => setDeliveryAgentModal(false)}>
+            Cancel
+          </Button>
+        </DialogFooter>
+      </>
+    )}
+  </DialogContent>
+</Dialog>
     </div>
   );
 }
