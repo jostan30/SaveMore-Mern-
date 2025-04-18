@@ -18,12 +18,12 @@ def home():
     return "Welcome to the Dynamic Pricing API! Use POST /predict to get discount predictions."
 
 
-@app.route('/predict', methods=['POST'])                    #api
+@app.route('/predict', methods=['POST'])                    #api 
 def predict():
     try:
         data = request.get_json()
 
-        product_name = data['product_name']                     # Input values
+        product_name = data['product_name']                     # Input values for prediction
         price = float(data['price'])
         days_remaining = int(data['days_remaining'])
 
