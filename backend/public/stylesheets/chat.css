@@ -1,0 +1,111 @@
+/* Logo styling */
+.logo {
+    display: block;
+    margin: 20px auto;
+    width: 50px;
+    height: 50px;
+}
+
+/* Body styling */
+body {
+    height: 100vh;
+    background: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    color: #333;
+}
+
+/* Chat container styling */
+.container {
+    background: #ffffff;
+    max-width: 900px;
+    margin: 20px auto;
+    height: 60vh;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dfe3e8;
+}
+
+/* Header styling */
+h1 {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    color: #444;
+}
+
+/* Message styling */
+.message {
+    width: auto;
+    max-width: 70%;
+    padding: 12px 18px;
+    border-radius: 15px;
+    margin: 12px 0;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Left-aligned messages */
+.left {
+    background-color: #e3e8f0;
+    color: #333;
+    float: left;
+    clear: both;
+}
+
+/* Right-aligned messages */
+.right {
+    background-color: #4a90e2;
+    color: #ffffff;
+    float: right;
+    clear: both;
+}
+
+/* Send container styling */
+#send-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Message input styling */
+#messageInp {
+    width: 85%;
+    border: 1px solid #d1d9e6;
+    border-radius: 15px;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+#messageInp:focus {
+    border-color: #4a90e2;
+    box-shadow: inset 0px 2px 4px rgba(74, 144, 226, 0.2);
+}
+
+/* Send button styling */
+.btn {
+    cursor: pointer;
+    border: none;
+    background-color: #4a90e2;
+    color: #ffffff;
+    border-radius: 15px;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #3a78c2;
+}

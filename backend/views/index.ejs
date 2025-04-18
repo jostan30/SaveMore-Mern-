@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #E6F0FA, #F0F7FF);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .container h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #4A90E2;
+        }
+
+        .container p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .login-options a {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #4A90E2;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .login-options a:hover {
+            background: #357ABD;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-options a i {
+            margin-right: 10px;
+            color: #ffffff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 500px) {
+            .container h1 {
+                font-size: 2em;
+            }
+            .container p {
+                font-size: 1em;
+            }
+            .login-options a {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to SaveMore</h1>
+        <p>Select your login type to continue</p>
+        
+        <div class="login-options">
+            <a href="/owners"><i class="fas fa-store"></i> Retailer</a>
+            <a href="/admin"><i class="fas fa-user-shield"></i> Admin</a>
+            <a href="/users"><i class="fas fa-user-tag"></i> Buyer</a>
+        </div>
+    </div>
+</body>
+</html>
