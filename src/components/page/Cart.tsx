@@ -193,7 +193,6 @@ function Cart() {
           Authorization: `Bearer ${token}`
         }
       });
-      const orders = orderResponse.data.order || [];
       const razorpayKey = keyResponse.data.key;
       const razorpay_order_id = orderResponse.data.razorpayOrderId;
       // Initialize Razorpay checkout
