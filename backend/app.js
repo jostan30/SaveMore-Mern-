@@ -12,6 +12,7 @@ const ownersRouter=require('./routes/ownersRouter');
 const userRouter=require('./routes/usersRouter');
 const productsRouter=require('./routes/productsRouter');
 const indexRouter=require('./routes/index');
+const paymentRouter =require('./routes/paymentRouter');
 const expressSession=require("express-session");
 const flash=require('connect-flash');
 const { log } = require('console');
@@ -44,6 +45,7 @@ app.use('/',indexRouter);
 app.use('/owners',ownersRouter);
 app.use('/users',userRouter);
 app.use('/products',productsRouter);
+app.use('/payments' ,paymentRouter);
 
 const http = require('http');
 const server = http.createServer(app);

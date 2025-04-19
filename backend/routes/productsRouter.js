@@ -8,39 +8,6 @@ const ownerModel = require("../models/owner-model");
 const GEMINI_KEY=process.env.YOUR_GEMINI_KEY;
 console.log("The gemini key is",GEMINI_KEY);
 
-// router.post('/create', upload.single('image'), async (req, res) => {
-//     try {
-//         const token = req.headers["authorization"]?.split(" ")[1];
-//         if (!token) {
-//             return res.status(401).json({ success: false, message: "Token is missing" });
-//           }
-        
-//         const decoded = jwt.verify(token, process.env.JWT_KEY); // Verify the token
-//             let owner = await ownerModel.findOne({ _id: decoded.id }).select("-password");
-
-//         let { name, price,units, discount, ShopName, Address, description } = req.body;
-//         let product = await productModel.create({
-//             image: req.file.buffer,
-//             name,
-//             price,
-//             units,
-//             discount,
-//             ShopName,
-//             Address,
-//             description,
-//             owner: owner._id
-//         })
-//         console.log(product);
-//         await ownerModel.findByIdAndUpdate(owner._id,{
-//             $push:{products:product._id}
-//         })
-//         res.status(201).json({ success: true, message: "Product created successfully", product });
-//     } catch (error) {
-//         console.log(error);
-//         return res.json({ success: false,message:"Error" });
-//     }
-
-// })
 router.post('/create', upload.single('image'), async (req, res) => {
     try {
         const token = req.headers["authorization"]?.split(" ")[1];

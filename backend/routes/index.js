@@ -1,53 +1,54 @@
 const express = require('express');
 const router = express.Router();
 const isLoggedIn = require('../middlewares/isLoggedIn');
+const Razorpay = require("razorpay");
 const productModel = require('../models/product-model');
 const userModel = require('../models/user-model');
-const orderModel=require('../models/order-model');
-const ownerModel=require('../models/owner-model');
-const deliveryModel=require('../models/delivery-model');
+const orderModel = require('../models/order-model');
+const ownerModel = require('../models/owner-model');
+const deliveryModel = require('../models/delivery-model');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
 //For useAuth checks if the token exists in both owner and user and send the role if its found 
-router.get('/verifyToken', async(req,res) =>{
+router.get('/verifyToken', async (req, res) => {
   const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
-  
+
   if (!token) {
     return res.json({ success: false, message: "Token is missing" });
   }
   try {
 
     const decoded = jwt.verify(token, process.env.JWT_KEY);
-    
+
     let user = null;
-    if(decoded.role === "user") {
+    if (decoded.role === "user") {
       user = await userModel.findOne({ _id: decoded.id }).select("-password");
-    } else if(decoded.role === "owner") {
+    } else if (decoded.role === "owner") {
       user = await ownerModel.findOne({ _id: decoded.id }).select("-password");
     }
 
-    if(user && decoded.role === "user") {
-      return res.status(200).json({success:true , data:user ,role :"user"});
-    } else if(user) {
-      return res.status(200).json({success:true , data:user , role : "retailer"});
-    } 
+    if (user && decoded.role === "user") {
+      return res.status(200).json({ success: true, data: user, role: "user" });
+    } else if (user) {
+      return res.status(200).json({ success: true, data: user, role: "retailer" });
+    }
 
-    return res.status(401).json({success:false , message: "No user found"})
-    
-  }catch (error){
+    return res.status(401).json({ success: false, message: "No user found" })
+
+  } catch (error) {
     console.log(error);
     return res.json({ success: false, message: "Token is invalid" });
   }
-})  
+})
 
-
+//Access Public
 // Get all products from the shop
 router.get('/shop', async (req, res) => {
   try {
     let products = await productModel.find();
-    if (products.length===0) {
+    if (products.length === 0) {
       return res.json({ success: false, message: "No Products yet" });
     }
     // Convert Buffer image to Base64 string
@@ -62,30 +63,29 @@ router.get('/shop', async (req, res) => {
   }
 });
 
-
+//Access Private for Users
 router.get('/cart', async (req, res) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
-    console.log("The token in cart is", token);
-    
+
     if (!token) {
       return res.status(401).json({ message: "Token is missing" });
     }
-    
+
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     let user = await userModel.findOne({ _id: decoded.id }).populate('cart.product_id');
     //here populate was allowed because product_id ias an object reference
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Format cart products
     const formattedProducts = user.cart.map((item) => ({
       ...item.product_id.toObject(),
       quantity: item.quantity,
       image: item.product_id.image.toString("base64"), // Convert Buffer to Base64
     }));
-    
+
     return res.json(formattedProducts);
   } catch (error) {
     console.error("Cart error:", error);
@@ -93,119 +93,144 @@ router.get('/cart', async (req, res) => {
   }
 });
 
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 router.get('/fetchPurchase', async (req, res) => {
   try {
-    const token = req.headers["authorization"]?.split(" ")[1]; // Extract token
-    console.log("The token in buy is", token);
-
-    if (!token) {
-      return res.status(401).json({ message: "Token is missing" });
-    }
+    const token = req.headers["authorization"]?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Token is missing" });
 
     const decoded = jwt.verify(token, process.env.JWT_KEY);
 
-    // Fetch purchases from the orders collection instead of users
-    const orders = await orderModel.find({ buyer: decoded.id })
-      .populate("product", "name price image") // Get product details
-      .populate("owner", "email"); // Get owner details
+    // Fetch orders with populated products
+    const orders = await orderModel.find({ buyer: decoded.id }).populate({
+      path: "orderProduct.product_id",
+      model: "product-model",
+    });
 
     if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: "No purchases found" });
+      return res.status(404).json({ message: "No orders found" });
     }
 
-    const purchasedProducts = orders.map(order => ({
-      productName: order.product?.name || "Product not found",
-      productPrice: order.product?.price || 0,
-      productImage: order.product?.image 
-        ? order.product.image.toString('base64') // Convert buffer to base64
-        : "", 
-      ownerEmail: order.owner?.email || "No email",
-      quantity: order.quantity,
-      purchasedDate: order.purchaseDate,
-      paymentMethod: order.paymentMethod,
-      status: order.status,
-    }));
+    // Create an array to store the purchased products without merging the existing products
+    const purchasedProducts = [];
 
-    console.log("The purchased products in the buy are", purchasedProducts);
-    return res.json(purchasedProducts);
+    orders.forEach(order => {
+      order.orderProduct.forEach(item => {
+        const product = item.product_id;
+        const id = product?._id?.toString();
+
+        if (!id) return;
+
+        purchasedProducts.push({
+          _id: id,
+          productName: product?.name || "Product not found",
+          productPrice: product?.price || 0,
+          productImage: product?.image?.toString('base64') || null,
+          quantity: item.quantity || 0,
+          orderDates: [order.purchaseDate || "Date not available"],
+          orderStatuses: [order.status || "Status not available"],
+          paymentMethods: [order.paymentMethod || "Not provided"],
+          isPaid: order.isPaid || false,
+        });
+      });
+    });
+
+    return res.json({ purchasedProducts });
   } catch (error) {
-    console.error("Fetch Purchase Error:", error);
+    console.error("Get Purchased Products Error:", error);
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
-router.post("/checkout", async (req, res) => {   //use as post to buy a product
+
+
+
+router.post("/checkout", async (req, res) => {
   try {
-    // Extract and verify token
     const token = req.headers["authorization"]?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Token is missing" });
-    }
+    if (!token) return res.status(401).json({ message: "Token is missing" });
 
-    const decoded = jwt.verify(token,process.env.JWT_KEY);
-    const buyerId = decoded.id; // Assuming token contains user ID
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const buyerId = decoded.id;
+
     const buyer = await userModel.findById(buyerId);
-    if (!buyer) {
-      return res.status(404).json({ message: "User not found" });
+    if (!buyer) return res.status(404).json({ message: "User not found" });
+
+    const cart = buyer.cart;
+    const { checkoutInfo } = req.body;
+    if (!cart || cart.length === 0 || !checkoutInfo) {
+      return res.status(400).json({ message: "Cart is empty or missing checkout info" });
     }
 
-    console.log("Token verified, buyer:", buyer.email);
+    const orderedItems = [];
+    let totalAmount = 0;
+    let ownerId = null;
 
-    // Extract checkout data
-    const { selectedProduct, CartProduct, checkoutInfo } = req.body;
-    const products = selectedProduct ? [selectedProduct] : CartProduct; // Ensure always an array
+    for (const item of cart) {
+      const productDetails = await productModel.findById(item.product_id);
+      if (!productDetails) throw new Error(`Product with ID ${item.product_id} not found`);
 
-    if (!products || products.length === 0 || !checkoutInfo) {
-      return res.status(400).json({ message: "Invalid request data" });
-    }
-
-    // Create orders for each product
-    const orderPromises = products.map(async (product) => {
-      const productDetails = await productModel.findById(product._id);
-      if (!productDetails) {
-        throw new Error(`Product with ID ${product._id} not found`);
-      }
-      
-      console.log("🔹 Processing order for product:", productDetails._id);
-      console.log("🏭 Product Owner:", productDetails.owner);
-      console.log("🔢 Quantity:", product.quantity || 1);
-      console.log("👤 Buyer Name:", checkoutInfo.name);
-      console.log("📧 Buyer Email:", checkoutInfo.email);
-      console.log("📍 Address:", checkoutInfo.address);
-      console.log("💳 Payment Method:", checkoutInfo.paymentMethod);
-
-      const newOrder = new orderModel({
-        buyer: buyer._id,
-        owner: productDetails.owner, // Assuming product has an owner field
-        product: productDetails._id,
-
-        quantity: product.quantity || 1,
-        buyerName: checkoutInfo.name, // FIXED: Changed from checkoutInfo.fullName
-        buyerEmail: checkoutInfo.email,
-        address: checkoutInfo.address,
-        paymentMethod: checkoutInfo.paymentMethod,
-        status: "Pending",
+      orderedItems.push({
+        product_id: productDetails._id,
+        quantity: item.quantity || 1,
       });
-// Reduce the product stock
-await productModel.findByIdAndUpdate(product._id, {
-  $inc: { units: -(product.quantity || 1) }
-});
-await ownerModel.findByIdAndUpdate(productDetails.owner,{
-  $push:{orders:newOrder._id}
-})
-      return newOrder.save();
-      
+
+      totalAmount += productDetails.price * (item.quantity || 1);
+
+      // Decrease stock
+      await productModel.findByIdAndUpdate(productDetails._id, {
+        $inc: { units: -(item.quantity || 1) },
+      });
+
+      // Set ownerId (assuming single-owner orders)
+      if (!ownerId) ownerId = productDetails.owner;
+    }
+
+    const newOrder = new orderModel({
+      buyer: buyer._id,
+      owner: ownerId,
+      orderProduct: orderedItems,
+      buyerName: checkoutInfo.name,
+      buyerEmail: checkoutInfo.email,
+      address: checkoutInfo.address,
+      paymentMethod: checkoutInfo.paymentMethod,
+      status: "Pending",
+      isPaid: false,
     });
-  
-    const savedOrders = await Promise.all(orderPromises);
+
+    const savedOrder = await newOrder.save();
+    console.log(savedOrder);
+
+    // Update owner's orders
+    await ownerModel.findByIdAndUpdate(ownerId, { $push: { orders: savedOrder._id } });
+
+    // Add to user's purchase history
+    const purchasedItems = orderedItems.map(item => ({
+      product_id: item.product_id,
+      quantity: item.quantity
+    }));
+
     await userModel.findByIdAndUpdate(buyerId, {
-      $push: { purchasedProducts: { $each: savedOrders.map(order => order._id) } }
+      $push: { purchasedProducts: { $each: purchasedItems } },
+      $set: { cart: [] }, // clear cart
     });
-    
+
+    // Create Razorpay order
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount: totalAmount * 100,
+      currency: "INR",
+      receipt: `receipt_order_${Date.now()}`,
+    });
+
     return res.status(201).json({
+      amount: razorpayOrder.amount,
       message: "Order placed successfully",
-      orders: savedOrders,
+      order: savedOrder,
+      razorpayOrderId: razorpayOrder.id,
     });
   } catch (error) {
     console.error("Checkout error:", error);
@@ -213,20 +238,19 @@ await ownerModel.findByIdAndUpdate(productDetails.owner,{
   }
 });
 
-// module.exports = router;
-
 // Add a product to the cart
 router.post('/addtocart', async (req, res) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from Authorization header
+
     if (!token) {
       return res.status(401).json({ message: "Token is missing" });
     }
-     console.log("THE TOKEN IN ADD TO CART API IS",token);
-     
-    const { product_id, quantity,name } = req.body; // Extract product_id and quantity from request body
-    
+
+    const { product_id, quantity, name } = req.body; // Extract product_id and quantity from request body
+
     const decoded = jwt.verify(token, process.env.JWT_KEY);
+
     let user = await userModel.findById(decoded.id)
 
     if (!user) {
@@ -245,7 +269,7 @@ router.post('/addtocart', async (req, res) => {
       user.cart[existingCartItemIndex].quantity += quantity; // Add to the existing quantity
     } else {
       // Otherwise, add a new product to the cart with the given quantity
-      user.cart.push({ product_id, quantity ,name});
+      user.cart.push({ product_id, quantity, name });
     }
 
     await user.save();
@@ -270,9 +294,9 @@ router.get('/delete/:itemId', async (req, res) => {
 
     // Ensure the itemId is an ObjectId (in case it's passed as a string in the URL)
     const itemId = new ObjectId(req.params.itemId);
-    
+
     // Find the index of the item to be deleted using the item ID
-    const itemIndex = user.cart.findIndex(item => item._id =itemId);
+    const itemIndex = user.cart.findIndex(item => item._id = itemId);
 
 
     if (itemIndex !== -1) {
@@ -288,30 +312,31 @@ router.get('/delete/:itemId', async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 });
-module.exports = router;
 
-router.post("/deliveryRegister",async(req,res)=>{
+router.post("/deliveryRegister", async (req, res) => {
   try {
-    let {name,contact,address,owner}=req.body;
+  
+    let { name, contact, address, owner } = req.body;
 
-    let deliveryAgent=await deliveryModel.findOne({name});
-    if(deliveryAgent){
-       return res.json({success:false,message:"User already exists"}) 
-      }
-    else{
-      deliveryAgent=await deliveryModel.create({
+    let deliveryAgent = await deliveryModel.findOne({ name });
+    if (deliveryAgent) {
+      return res.json({ success: false, message: "User already exists" })
+    }
+    else {
+      deliveryAgent = await deliveryModel.create({
         name,
         contact,
         address,
         owner,
       })
-      return res.json({success:true,msg:"User craeted successfully"});
+      return res.json({ success: true, msg: "User craeted successfully" });
     }
   } catch (error) {
-    console.log("The server side error is",error);
-    
-    return res.json({success:false, msg: "Server side error" });
+    console.log("The server side error is", error);
+
+    return res.json({ success: false, msg: "Server side error" });
   }
-})
+});
 
 
+module.exports = router;

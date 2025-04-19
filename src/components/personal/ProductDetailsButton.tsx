@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { Calendar, Clock, Minus, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Toaster } from "../ui/toaster";
+import useAuth from "@/hooks/useAuth";
 
 interface Product {
     _id: string;
@@ -40,8 +41,7 @@ const ProductDetailsButton = ({ product }: { product: Product }) => {
     const [units, setunits] = useState(1);
     const [isOwner, setOwner] = useState(false);
     const location = useLocation();
-    const token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-
+    const {token} = useAuth();
     // Format the expiry date nicely
     const formatExpiryDate = (dateString:any) => {
         if (!dateString) return "Not specified";
@@ -79,13 +79,11 @@ const ProductDetailsButton = ({ product }: { product: Product }) => {
                 name: product.name
             }
             console.log("The data in product cart isss",data);
-            
-            const response = await axios.post(
-                `${API_BASE_URL}/addtocart`,
-                data,
+            console.log("Token being sent"+token)
+            const response = await axios.post(`${API_BASE_URL}/addtocart`,data,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }

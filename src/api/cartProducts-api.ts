@@ -23,7 +23,7 @@ export const useFetchCartProducts=()=>{
           "Content-Type": "application/json", // Optional, ensures proper request format
         },
       });
-     console.log("Return cart data in api",response);
+     console.log("Return cart data in api",response.data);
      
   
       return response.data; // Return the product data

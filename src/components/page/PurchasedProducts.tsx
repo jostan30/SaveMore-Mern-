@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useFetchPurchasedProducts } from "../../api/purchasedProducts-api";
 import { useNavigate } from "react-router";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Package, ExternalLink, Calendar, CreditCard,  Mail, Store } from "lucide-react";
+import { ShoppingCart, Package, ExternalLink, Calendar, CreditCard } from "lucide-react";
 
 interface PurchasedProduct {
   productName: string;
@@ -20,9 +19,10 @@ interface PurchasedProduct {
   status: string;
 }
 
+
 function PurchasedProducts() {
   const { fetchPurchasedProducts, isAuthLoading, isLoggedIn } = useFetchPurchasedProducts();
-  const [purchasedProducts, setPurchasedProducts] = useState<PurchasedProduct[]>([]);
+  const [purchasedProducts, setPurchasedProducts] = useState<PurchasedProduct[]>([]); // Ensuring it's initialized as an array
   const [selectedProduct, setSelectedProduct] = useState<PurchasedProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -36,27 +36,49 @@ function PurchasedProducts() {
   const loadPurchasedProducts = async () => {
     try {
       const response = await fetchPurchasedProducts();
-      setPurchasedProducts(response);
+  
+      // Transform each product with multiple purchase events into multiple product entries
+      const transformed: PurchasedProduct[] = response.flatMap((product: any) => {
+        return product.orderDates.map((date: string, index: number) => ({
+          productName: product.productName,
+          productPrice: product.productPrice,
+          productImage: product.productImage,
+          ownerShopName: product.ownerShopName,
+          ownerEmail: product.ownerEmail,
+          quantity: product.quantity,
+          purchasedDate: date,  // Mapped to individual purchase date
+          paymentMethod: product.paymentMethods[index],  // Mapped to individual payment method
+          status: product.orderStatuses[index],  // Mapped to individual order status
+        }));
+      });
+  
+      setPurchasedProducts(transformed);  // Update the state with the transformed product list
     } catch (error) {
       console.error("Error fetching purchased products:", error);
     } finally {
-      setLoading(false);
+      setLoading(false);  // Stop loading once the data is processed
     }
   };
+  
 
-  // Get status color based on status
+
   const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "shipped":
-        return "bg-blue-100 text-blue-800";
-      case "processing":
-        return "bg-yellow-100 text-yellow-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
+    if (!status || typeof status !== 'string') return 'gray';
+
+    const normalizedStatus = status.toLowerCase();
+
+    switch (normalizedStatus) {
+      case 'pending':
+        return 'bg-orange-100 text-orange-700';
+      case 'completed':
+        return 'bg-green-100 text-green-700';
+      case 'cancelled':
+        return 'bg-gray-200 text-gray-700';
+      case 'failed':
+      case 'unpaid':
+        return 'bg-red-100 text-red-700';
       default:
-        return "bg-purple-100 text-purple-800";
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
@@ -79,7 +101,7 @@ function PurchasedProducts() {
                 <Package className="w-6 h-6 text-white" />
                 <h2 className="text-2xl font-bold text-white">Your Purchases</h2>
               </div>
-              <Button 
+              <Button
                 onClick={() => navigate('/users/cart')}
                 className="text-indigo-600 bg-white hover:bg-gray-100"
               >
@@ -101,8 +123,8 @@ function PurchasedProducts() {
                 <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
                 <p className="text-xl font-medium text-gray-400">No purchases found</p>
                 <p className="mt-2 mb-4 text-gray-400">Items you purchase will appear here</p>
-                <Button 
-                  onClick={() => navigate('/')} 
+                <Button
+                  onClick={() => navigate('/')}
                   className="mt-2 bg-indigo-600 hover:bg-indigo-700"
                 >
                   Start Shopping
@@ -110,7 +132,7 @@ function PurchasedProducts() {
               </div>
             ) : (
               <div className="space-y-4">
-                {purchasedProducts.map((product, index) => (
+                {Array.isArray(purchasedProducts) && purchasedProducts.map((product, index) => (
                   <Card key={index} className="overflow-hidden transition-shadow duration-300 border border-gray-200 hover:shadow-md">
                     <div className="flex flex-col sm:flex-row">
                       <div className="flex items-center justify-center p-4 bg-gray-50 sm:w-36">
@@ -127,12 +149,13 @@ function PurchasedProducts() {
                             <p className="text-sm text-gray-500">from {product.ownerShopName}</p>
                           </div>
                           <div className="mt-1">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(product.status)}`}>
-                              {product.status}
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusColor(product.status)}`}>
+                              {product.status === 'failed' || product.status === 'unpaid' ? 'Payment Failed' : product.status}
                             </span>
+
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 mt-3 gap-x-4 gap-y-1">
                           <p className="flex items-center text-sm text-gray-700">
                             <CreditCard className="w-4 h-4 mr-1 text-gray-400" />
@@ -149,9 +172,9 @@ function PurchasedProducts() {
                         </div>
                       </CardContent>
                       <div className="flex items-center justify-end p-4">
-                        <Button 
+                        <Button
                           onClick={() => setSelectedProduct(product)}
-                          variant="outline" 
+                          variant="outline"
                           className="text-indigo-600 border-indigo-200 hover:bg-indigo-50"
                         >
                           <ExternalLink className="w-4 h-4 mr-2" />
@@ -180,7 +203,7 @@ function PurchasedProducts() {
               </p>
             </DialogHeader>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
             <div className="flex items-center justify-center p-4 rounded-lg bg-gray-50">
               <img
@@ -189,7 +212,7 @@ function PurchasedProducts() {
                 className="object-contain w-full h-64 rounded-lg"
               />
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-800">Product Details</h3>
@@ -205,55 +228,21 @@ function PurchasedProducts() {
                   <div className="flex justify-between pb-2 border-b border-gray-100">
                     <span className="text-gray-500">Status</span>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${selectedProduct ? getStatusColor(selectedProduct.status) : ''}`}>
-                      {selectedProduct?.status}
+                      {selectedProduct?.status === 'failed' || selectedProduct?.status === 'unpaid' ? 'Payment Failed' : selectedProduct?.status}
                     </span>
+
                   </div>
                   <div className="flex justify-between pb-2 border-b border-gray-100">
                     <span className="text-gray-500">Total</span>
-                    <span className="font-semibold text-gray-900">
-                      ₹{selectedProduct ? (selectedProduct.productPrice * selectedProduct.quantity).toFixed(2) : ''}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">Seller Information</h3>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Store className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{selectedProduct?.ownerShopName}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{selectedProduct?.ownerEmail}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">Order Information</h3>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <CreditCard className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{selectedProduct?.paymentMethod}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm">{selectedProduct ? formatDate(selectedProduct.purchasedDate) : ''}</span>
+                    <span className="font-medium text-gray-900">₹{(selectedProduct?.productPrice || 0) * (selectedProduct?.quantity || 0)}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
-          <div className="flex justify-end p-4 bg-gray-50">
-            <Button 
-              onClick={() => setSelectedProduct(null)}
-              className="bg-indigo-600 hover:bg-indigo-700"
-            >
-              Close Details
-            </Button>
+
+          <div className="flex justify-end gap-3 p-6 bg-gray-100">
+            <Button onClick={() => setSelectedProduct(null)} variant="outline" className="w-full sm:w-auto">Close Details</Button>
           </div>
         </DialogContent>
       </Dialog>
