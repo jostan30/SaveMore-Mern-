@@ -128,7 +128,7 @@ router.get('/fetchPurchase', async (req, res) => {
         purchasedProducts.push({
           _id: id,
           productName: product?.name || "Product not found",
-          productPrice: product?.price || 0,
+          productPrice: (product?.discount+(product?.discount*0.08))  || 0,
           productImage: product?.image?.toString('base64') || null,
           quantity: item.quantity || 0,
           orderDates: [order.purchaseDate || "Date not available"],
@@ -146,9 +146,6 @@ router.get('/fetchPurchase', async (req, res) => {
   }
 });
 
-
-
-
 router.post("/checkout", async (req, res) => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1];
@@ -161,13 +158,12 @@ router.post("/checkout", async (req, res) => {
     if (!buyer) return res.status(404).json({ message: "User not found" });
 
     const cart = buyer.cart;
-    const { checkoutInfo } = req.body;
+    const { checkoutInfo ,totalAmount } = req.body;
     if (!cart || cart.length === 0 || !checkoutInfo) {
       return res.status(400).json({ message: "Cart is empty or missing checkout info" });
     }
 
     const orderedItems = [];
-    let totalAmount = 0;
     let ownerId = null;
 
     for (const item of cart) {
@@ -179,8 +175,7 @@ router.post("/checkout", async (req, res) => {
         quantity: item.quantity || 1,
       });
 
-      totalAmount += productDetails.price * (item.quantity || 1);
-
+     
       // Decrease stock
       await productModel.findByIdAndUpdate(productDetails._id, {
         $inc: { units: -(item.quantity || 1) },
@@ -198,6 +193,7 @@ router.post("/checkout", async (req, res) => {
       buyerEmail: checkoutInfo.email,
       address: checkoutInfo.address,
       paymentMethod: checkoutInfo.paymentMethod,
+      ToyalAmount : totalAmount,
       status: "Pending",
       isPaid: false,
     });
@@ -221,7 +217,7 @@ router.post("/checkout", async (req, res) => {
 
     // Create Razorpay order
     const razorpayOrder = await razorpayInstance.orders.create({
-      amount: totalAmount * 100,
+      amount: totalAmount,
       currency: "INR",
       receipt: `receipt_order_${Date.now()}`,
     });

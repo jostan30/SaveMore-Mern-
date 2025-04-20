@@ -68,7 +68,7 @@ function Cart() {
   // Calculate totals
   const calculateSubtotal = (products: Product[]) => {
     return products.reduce((total, product) => {
-      return total + product.price * product.quantity;
+      return total + product.discount * product.quantity;
     }, 0);
   };
 
@@ -160,7 +160,7 @@ function Cart() {
     setIsProcessing(true);
 
     try {
-      const data = { checkoutInfo };
+      const data = { checkoutInfo ,totalAmount: Math.round(total * 100), };
 
       const orderResponse = await axios.post(
         `http://localhost:3000/checkout`,
@@ -172,8 +172,8 @@ function Cart() {
         }
       );
 
-      console.log("Order Response data: " ,orderResponse.data.order);
-      console.log("Order Id data: " ,orderResponse.data.order._id);
+      console.log("Order Response data: ", orderResponse.data.order);
+      console.log("Order Id data: ", orderResponse.data.order._id);
       setIsCheckoutOpen(false);
 
       // Load Razorpay script
@@ -422,10 +422,13 @@ function Cart() {
                           </div>
                           <div className="flex flex-col gap-3 mt-4 md:mt-0 md:items-end">
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-gray-900">{product.price.toFixed(2)}</p>
-                              {product.discount > 0 && (
-                                <p className="text-sm text-green-600">Save {product.discount}%</p>
+                              <p className="text-2xl font-bold text-gray-900">{product.discount.toFixed(2)}</p>
+                              {product.discount < product.price && (
+                                <p className="text-sm text-green-600">
+                                  Save {(((product.price - product.discount) / product.price) * 100).toFixed(2)}%
+                                </p>
                               )}
+
                             </div>
                             <div className="flex gap-2">
                               <Button
@@ -590,7 +593,7 @@ function Cart() {
                       {checkoutProducts.map((product) => (
                         <div key={product._id} className="flex justify-between">
                           <span>{product.name} (x{product.quantity})</span>
-                          <span>{(product.price * product.quantity).toFixed(2)}</span>
+                          <span>{(product.discount * product.quantity).toFixed(2)}</span>
                         </div>
                       ))}
                       <div className="pt-2 mt-2 border-t"></div>

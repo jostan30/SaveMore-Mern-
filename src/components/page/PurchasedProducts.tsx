@@ -41,7 +41,7 @@ function PurchasedProducts() {
       const transformed: PurchasedProduct[] = response.flatMap((product: any) => {
         return product.orderDates.map((date: string, index: number) => ({
           productName: product.productName,
-          productPrice: product.productPrice,
+          productPrice: product.productPrice.toFixed(2),
           productImage: product.productImage,
           ownerShopName: product.ownerShopName,
           ownerEmail: product.ownerEmail,

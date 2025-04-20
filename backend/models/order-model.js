@@ -12,6 +12,7 @@ const orderSchema = new mongoose.Schema({
     buyerName: { type: String, required: true }, // User's full name
     buyerEmail: { type: String, required: true }, // User's email for contact
     address: { type: String, required: true }, // Delivery address
+    ToyalAmount :{type:Number , default:0} ,
     paymentMethod: { 
         type: String, 
         enum: ["credit-card", "paypal", "bank-transfer", "cash-on-delivery"], 

@@ -24,7 +24,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const discountedPrice = product.price - (product.price * product.discount) / 100;
+  
+
+  const discountedPrice = product.discount != null ?  product.discount :  product.price - (product.price * product.discount) / 100;
   const [isFavorite, setIsFavorite] = React.useState(false);
   const userAuth = useAuth();
   const ownerAuth = useAuth();

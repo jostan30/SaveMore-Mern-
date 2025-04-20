@@ -1,5 +1,4 @@
-
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, Calendar, ShoppingBag, AlertCircle, Clock } from "lucide-react";
+import { Upload, Calendar, ShoppingBag, AlertCircle, Clock, Edit } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,6 +53,8 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [isExtracting, setIsExtracting] = useState(false);
     const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+    const [predictedPrice, setPredictedPrice] = useState<number | null>(null);
+    const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (formData.expiryDate) {
@@ -62,18 +63,19 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
     }, [formData.expiryDate]);
 
     const calculateDaysRemaining = () => {
-        if (!formData.expiryDate) return;
-        
+        if (!formData.expiryDate) return null;
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         const expiryDate = new Date(formData.expiryDate);
         expiryDate.setHours(0, 0, 0, 0);
-        
+
         const differenceInTime = expiryDate.getTime() - today.getTime();
         const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-        
+
         setDaysRemaining(differenceInDays);
+        return differenceInDays;
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -101,7 +103,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
             setFormData((prev) => ({
                 ...prev,
                 expiryImage: file,
-                expiryDate: "" // Reset expiry date when new image is uploaded
+                // Don't reset expiryDate to preserve any manually entered date
             }));
             setDaysRemaining(null);
         }
@@ -115,10 +117,10 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
             });
             return;
         }
-        
+
         setIsExtracting(true);
         toast({ title: "Extracting text from image..." });
-        
+
         try {
             const base64String = await new Promise<string>((res, rej) => {
                 const reader = new FileReader();
@@ -146,18 +148,20 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                     ...prev,
                     expiryDate: result.extractedExpiryDate
                 }));
-                
+
                 toast({ title: "Expiry Date Extracted Successfully!" });
             } else {
-                toast({ 
-                    title: "Could not extract expiry date", 
-                    variant: "destructive" 
+                toast({
+                    title: "Could not extract expiry date",
+                    description: "Please enter the date manually",
+                    variant: "destructive"
                 });
             }
         } catch (error: any) {
             console.error("The error is", error);
             toast({
                 title: "Error extracting expiry date",
+                description: "Please enter the date manually",
                 variant: "destructive"
             });
         } finally {
@@ -177,11 +181,16 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
             }
         });
         
+        // Add predictedPrice if available
+        if (predictedPrice !== null) {
+            formDataToSend.append("predictedPrice", predictedPrice.toString());
+        }
+        
         // Add days remaining if available
         if (daysRemaining !== null) {
             formDataToSend.append('daysRemaining', daysRemaining.toString());
         }
-        
+
         const token = document.cookie
             .split("; ")
             .find((row) => row.startsWith("token="))
@@ -194,7 +203,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                     "Content-Type": "multipart/form-data"
                 },
             });
-            
+
             const result = response.data;
             if (result.success === false) {
                 setIsDialogOpen(false);
@@ -240,7 +249,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
     // Function to render the expiry status badge
     const renderExpiryStatus = () => {
         if (daysRemaining === null) return null;
-        
+
         if (daysRemaining <= 0) {
             return (
                 <Badge variant="destructive" className="flex items-center gap-1">
@@ -272,6 +281,47 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
         }
     };
 
+    // ML model integration
+    useEffect(() => {
+        if (!formData.price || !formData.expiryDate || !formData.units) return;
+
+        if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+
+        debounceTimeout.current = setTimeout(() => {
+            const fetchPredictedPrice = async () => {
+                const currentDaysRemaining = calculateDaysRemaining();
+                
+                if (currentDaysRemaining === null) return;
+                const data = {
+                    product_name: formData.name,   
+                    price: parseFloat(formData.price),
+                    days_remaining: currentDaysRemaining,
+                }
+                console.log("Ml data response to be sent :",data)
+                try {
+                    const response = await axios.post("https://dynamic-pricing-model-5.onrender.com/predict", data);
+
+                    console.log(response.data);
+                    
+                    setPredictedPrice(response.data.final_price.toString());
+                    setFormData(prev => ({
+                        ...prev,
+                        discount: response.data.final_price.toString(),  // Ensure it's stored as a string since initial state uses strings
+                    }));
+                } catch (error) {
+                    console.error("Prediction error:", error);
+                    setPredictedPrice(null);
+                }
+            };
+
+            fetchPredictedPrice();
+        }, 500); // 500ms debounce
+
+        return () => {
+            if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+        };
+    }, [formData.price, formData.expiryDate, formData.units, formData.name]);
+
     return (
         <div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -301,8 +351,8 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center w-32 h-32 transition-colors border-2 border-gray-300 border-dashed rounded-lg bg-gray-50 hover:bg-gray-100">
-                                        <Upload size={28} className="text-gray-500" />
-                                        <span className="mt-2 text-sm text-gray-600">Upload Product Image</span>
+                                        <Upload size={40} className="text-gray-500" />
+                                        <span className="mt-2 text-sm text-center text-gray-600 m-x-auto">Upload Product Image</span>
                                     </div>
                                 )}
                             </Label>
@@ -314,6 +364,65 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                                 className="hidden"
                             />
                         </div>
+                        <Card className="bg-gray-50">
+                            <CardContent className="pt-6">
+                                <h3 className="flex items-center gap-2 mb-3 text-sm font-medium">
+                                    <Calendar size={16} className="text-blue-500" />
+                                    Product Expiry Information
+                                </h3>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="expiryImage" className="text-sm font-medium">Upload Expiry Image</Label>
+                                        <Input
+                                            id="expiryImage"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleExpiryImageChange}
+                                            className="mt-1"
+                                        />
+                                    </div>
+
+                                    <Button
+                                        type="button"
+                                        onClick={handleExtractExpiry}
+                                        disabled={!formData.expiryImage || isExtracting}
+                                        className="w-full"
+                                    >
+                                        {isExtracting ? "Extracting..." : "Extract Expiry Date"}
+                                    </Button>
+                                    
+                                    <div>
+                                        <Label htmlFor="expiryDate" className="flex items-center gap-1 text-sm font-medium">
+                                            <Edit size={14} className="text-blue-500" />
+                                            Manual Expiry Date Entry
+                                        </Label>
+                                        <Input
+                                            id="expiryDate"
+                                            type="date"
+                                            value={formData.expiryDate || ""}
+                                            onChange={handleChange}
+                                            className="mt-1"
+                                        />
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            Enter date manually if extraction doesn't work
+                                        </p>
+                                    </div>
+
+                                    {formData.expiryDate && (
+                                        <div className="p-4 mt-3 bg-white border rounded-md">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="text-sm text-gray-500">Expiry Date</p>
+                                                    <p className="font-medium">{new Date(formData.expiryDate).toLocaleDateString()}</p>
+                                                </div>
+                                                {renderExpiryStatus()}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
@@ -342,7 +451,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             <div>
-                                <Label htmlFor="price" className="text-sm font-medium">Price ($)</Label>
+                                <Label htmlFor="price" className="text-sm font-medium">Price (₹)</Label>
                                 <Input
                                     id="price"
                                     type="number"
@@ -353,17 +462,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                                     className="mt-1"
                                 />
                             </div>
-                            <div>
-                                <Label htmlFor="discount" className="text-sm font-medium">Discount (%)</Label>
-                                <Input
-                                    id="discount"
-                                    type="number"
-                                    value={formData.discount}
-                                    onChange={handleChange}
-                                    placeholder="0"
-                                    className="mt-1"
-                                />
-                            </div>
+                            
                             <div>
                                 <Label htmlFor="units" className="text-sm font-medium">Units Available</Label>
                                 <Input
@@ -376,6 +475,18 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                                 />
                             </div>
                         </div>
+                        
+                        {predictedPrice && (
+                            <div className="p-3 border border-green-200 rounded-md bg-green-50">
+                                <p className="flex items-center gap-1 font-medium text-green-700">
+                                    <AlertCircle size={16} className="text-green-600" />
+                                    ML Suggested Price: <strong>₹{predictedPrice}</strong>
+                                </p>
+                                <p className="mt-1 text-xs text-green-600">
+                                    Based on product details and {daysRemaining} days until expiry
+                                </p>
+                            </div>
+                        )}
 
                         <div>
                             <Label htmlFor="Address" className="text-sm font-medium">Address</Label>
@@ -403,60 +514,17 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                             />
                         </div>
 
-                        <Card className="bg-gray-50">
-                            <CardContent className="pt-6">
-                                <h3 className="flex items-center gap-2 mb-3 text-sm font-medium">
-                                    <Calendar size={16} className="text-blue-500" />
-                                    Product Expiry Information
-                                </h3>
-                                
-                                <div className="space-y-4">
-                                    <div>
-                                        <Label htmlFor="expiryImage" className="text-sm font-medium">Upload Expiry Image</Label>
-                                        <Input
-                                            id="expiryImage"
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleExpiryImageChange}
-                                            className="mt-1"
-                                        />
-                                    </div>
-                                    
-                                    <Button
-                                        type="button"
-                                        onClick={handleExtractExpiry}
-                                        disabled={!formData.expiryImage || isExtracting}
-                                        className="w-full"
-                                    >
-                                        {isExtracting ? "Extracting..." : "Extract Expiry Date"}
-                                    </Button>
-                                    
-                                    {formData.expiryDate && (
-                                        <div className="p-4 mt-3 bg-white border rounded-md">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm text-gray-500">Expiry Date</p>
-                                                    <p className="font-medium">{new Date(formData.expiryDate).toLocaleDateString()}</p>
-                                                </div>
-                                                {renderExpiryStatus()}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-
                         <DialogFooter className="flex gap-3 pt-2">
-                            <Button 
-                                type="button" 
-                                variant="outline" 
+                            <Button
+                                type="button"
+                                variant="outline"
                                 onClick={() => setIsDialogOpen(false)}
                                 className="flex-1"
                             >
                                 Cancel
                             </Button>
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 className="flex-1 bg-blue-600 hover:bg-blue-700"
                             >
                                 Add Product
