@@ -595,7 +595,7 @@ console.log("The api is trying to be hit");
                   <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
                     <div>
                       <p className="text-gray-500 text-xs">Total Amount</p>
-                      <p className="text-lg font-bold">${(product.productPrice * product.quantity).toFixed(2)}</p>
+                      <p className="text-lg font-bold">₹{(product.productPrice * product.quantity).toFixed(2)}</p>
                     </div>
                     <ShieldCheck className="h-8 w-8 text-primary/40" />
                   </div>
@@ -770,16 +770,16 @@ console.log("The api is trying to be hit");
                     <div className="font-medium text-gray-900">{selectedOrder.paymentMethod}</div>
                     
                     <div className="text-gray-600">Subtotal:</div>
-                    <div className="font-medium text-gray-900">${(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}</div>
+                    <div className="font-medium text-gray-900">₹{(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}</div>
                     
                     <div className="text-gray-600">Shipping:</div>
-                    <div className="font-medium text-gray-900">$0.00</div>
+                    <div className="font-medium text-gray-900">₹0.00</div>
                     
                     <div className="text-gray-600">Tax:</div>
-                    <div className="font-medium text-gray-900">$0.00</div>
+                    <div className="font-medium text-gray-900">₹0.00</div>
                     
                     <div className="text-gray-800 font-semibold pt-2 border-t border-gray-200 mt-2">Total:</div>
-                    <div className="font-bold text-lg text-primary pt-2 border-t border-gray-200 mt-2">${(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}</div>
+                    <div className="font-bold text-lg text-primary pt-2 border-t border-gray-200 mt-2">₹{(selectedOrder.productPrice * selectedOrder.quantity).toFixed(2)}</div>
                   </div>
                 </div>
               </div>
