@@ -289,7 +289,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
 
         debounceTimeout.current = setTimeout(() => {
             const fetchPredictedPrice = async () => {
-                const currentDaysRemaining = calculateDaysRemaining();
+                let currentDaysRemaining = calculateDaysRemaining();
                 
                 if (currentDaysRemaining === null) return;
                 const data = {
@@ -301,7 +301,7 @@ function AddProduct({ onProductAdded }: { onProductAdded: () => void }) {
                 try {
                     const response = await axios.post("https://dynamic-pricing-model-5.onrender.com/predict", data);
 
-                    console.log(response.data);
+                    console.log("Ml Backend :",response.data);
                     
                     setPredictedPrice(response.data.final_price.toString());
                     setFormData(prev => ({
